@@ -1,0 +1,12 @@
+Source: ros-foxy-ign-ros2-control-demos
+Section: misc
+Priority: optional
+Maintainer: Alejandro Hernandez <ahcorde@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), ros-foxy-ament-cmake, ros-foxy-ament-cmake-gtest, ros-foxy-ament-lint-auto, ros-foxy-ament-lint-common, ros-foxy-control-msgs, ros-foxy-rclcpp, ros-foxy-rclcpp-action, ros-foxy-std-msgs, ros-foxy-ros-workspace
+Homepage: https://github.com/ignitionrobotics/ign_ros2_control/blob/main/README.md
+Standards-Version: 3.9.2
+
+Package: ros-foxy-ign-ros2-control-demos
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-foxy-ament-index-python, ros-foxy-control-msgs, ros-foxy-effort-controllers, ros-foxy-hardware-interface, ros-foxy-ign-ros2-control, ros-foxy-imu-sensor-broadcaster, ros-foxy-joint-state-controller, ros-foxy-joint-trajectory-controller, ros-foxy-launch, ros-foxy-launch-ros, ros-foxy-rclcpp, ros-foxy-robot-state-publisher, ros-foxy-ros-ign-gazebo, ros-foxy-ros2controlcli, ros-foxy-std-msgs, ros-foxy-velocity-controllers, ros-foxy-xacro, ros-foxy-ros-workspace
+Description: ign_ros2_control_demos
