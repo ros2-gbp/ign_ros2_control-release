@@ -67,6 +67,7 @@ ament_target_dependencies(${PROJECT_NAME}-system
   rclcpp
   urdf
   yaml_cpp_vendor
+  rclcpp_lifecycle
 )
 
 #########
@@ -75,6 +76,7 @@ add_library(ign_hardware_plugins SHARED
   src/ign_system.cpp
 )
 ament_target_dependencies(ign_hardware_plugins
+  rclcpp_lifecycle
   hardware_interface
   rclcpp
 )
