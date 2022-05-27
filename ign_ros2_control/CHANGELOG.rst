@@ -2,24 +2,11 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.4.0 (2022-03-18)
+0.1.3 (2022-05-27)
 ------------------
-* Fix default ign gazebo version Galactic (`#44 <https://github.com/ignitionrobotics/ign_ros2_control/issues/44>`_)
-* Contributors: Alejandro Hernández Cordero
-
-0.3.0 (2022-03-16)
-------------------
-* Fix ignition version in package.xml (`#40 <https://github.com/ignitionrobotics/ign_ros2_control/issues/40>`_)
-* Contributors: Alejandro Hernández Cordero
-
-0.2.0 (2022-02-17)
-------------------
-* Merge pull request `#36 <https://github.com/ignitionrobotics/ign_ros2_control/issues/36>`_ from ignitionrobotics/ahcorde/foxy_to_galactic
-  Foxy -> Galactic
-* Merge remote-tracking branch 'origin/foxy' into ahcorde/foxy_to_galactic
-* Fixed position control (`#29 <https://github.com/ignitionrobotics/ign_ros2_control/issues/29>`_)
-* typo fix. (`#25 <https://github.com/ignitionrobotics/ign_ros2_control/issues/25>`_)
-* Contributors: Alejandro Hernández Cordero, Tomoya Fujita
+* Remove URDF dependency (`#56 <https://github.com/ignitionrobotics/ign_ros2_control/issues/56>`_)
+* typo in citadel name (`#54 <https://github.com/ignitionrobotics/ign_ros2_control/issues/54>`_)
+* Contributors: Alejandro Hernández Cordero, Guillaume Beuzeboc
 
 0.1.2 (2022-02-14)
 ------------------

@@ -22,7 +22,6 @@ find_package(controller_manager REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(urdf REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
 if("$ENV{IGNITION_VERSION}" STREQUAL "citadel")
@@ -41,9 +40,9 @@ elseif("$ENV{IGNITION_VERSION}" STREQUAL "fortress")
   message(STATUS "Compiling against Ignition Fortress")
 
 else()
-  find_package(ignition-gazebo5 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo5_VERSION_MAJOR})
-  message(STATUS "Compiling against Ignition Edifice")
+  find_package(ignition-gazebo3 REQUIRED)
+  set(IGN_GAZEBO_VER ${ignition-gazebo3_VERSION_MAJOR})
+  message(STATUS "Compiling against Ignition Citadel")
 endif()
 
 find_package(ignition-plugin1 REQUIRED)
@@ -65,9 +64,7 @@ ament_target_dependencies(${PROJECT_NAME}-system
   hardware_interface
   pluginlib
   rclcpp
-  urdf
   yaml_cpp_vendor
-  rclcpp_lifecycle
 )
 
 #########
@@ -76,7 +73,6 @@ add_library(ign_hardware_plugins SHARED
   src/ign_system.cpp
 )
 ament_target_dependencies(ign_hardware_plugins
-  rclcpp_lifecycle
   hardware_interface
   rclcpp
 )
