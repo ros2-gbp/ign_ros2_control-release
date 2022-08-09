@@ -30,7 +30,7 @@ Then create a workspace, clone the repo and compile it:
 ```bash
 mkdir -p ~/ros_ign/src
 cd ~/ros_ign/src
-git clone https://github.com/ignitionrobotics/ign_ros2_control
+git clone https://github.com/ros-controls/gz_ros2_control
 rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
 cd ~/ros2_ign
 colcon build
@@ -109,7 +109,9 @@ include:
       <param name="min">-1000</param>
       <param name="max">1000</param>
     </command_interface>
-    <state_interface name="position"/>
+    <state_interface name="position">
+      <param name="initial_value">1.0</param>
+    </state_interface>
     <state_interface name="velocity"/>
     <state_interface name="effort"/>
   </joint>
