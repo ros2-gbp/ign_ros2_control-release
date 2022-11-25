@@ -1,3 +1,28 @@
+## ign_ros2_control (galactic) - 0.4.2-1
+
+The packages in the `ign_ros2_control` repository were released into the `galactic` distro by running `/usr/bin/bloom-release --rosdistro galactic --track galactic ign_ros2_control -e` on `Fri, 25 Nov 2022 18:08:13 -0000`
+
+These packages were released:
+- `ign_ros2_control`
+- `ign_ros2_control_demos`
+
+Version of package(s) in repository `ign_ros2_control`:
+
+- upstream repository: https://github.com/ros-controls/gz_ros2_control
+- release repository: https://github.com/ros2-gbp/ign_ros2_control-release.git
+- rosdistro version: `0.4.1-1`
+- old version: `0.4.1-1`
+- new version: `0.4.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.22.1`
+- rosdistro version: `0.9.0`
+- vcstools version: `0.1.42`
+
+
 ## ign_ros2_control (foxy) - 0.1.5-1
 
 The packages in the `ign_ros2_control` repository were released into the `foxy` distro by running `/usr/bin/bloom-release --rosdistro foxy --track foxy ign_ros2_control -e` on `Fri, 25 Nov 2022 18:01:39 -0000`
