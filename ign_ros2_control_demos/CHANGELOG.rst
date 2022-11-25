@@ -2,19 +2,29 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.1.5 (2022-11-25)
+0.4.2 (2022-11-25)
 ------------------
-* Fixed URIS (`#93 <https://github.com/ros-controls/gz_ros2_control//issues/93>`_)
-* Contributors: Alejandro Hernández Cordero
-
-0.1.4 (2022-06-06)
-------------------
-* ign_ros2_control_demos: Install urdf dir (`#61 <https://github.com/ignitionrobotics/ign_ros2_control/issues/61>`_)
+* ign_ros2_control_demos: Install urdf dir (`#61 <https://github.com/ros-controls/gz_ros2_control//issues/61>`_)
 * Contributors: Alejandro Hernández Cordero, Andrej Orsula
 
-0.1.3 (2022-05-27)
+0.4.1 (2022-06-06)
 ------------------
+* ign_ros2_control_demos: Install urdf dir (`#61 <https://github.com/ignitionrobotics/ign_ros2_control/issues/61>`_)
 * Remove URDF dependency (`#56 <https://github.com/ignitionrobotics/ign_ros2_control/issues/56>`_)
+* Contributors: Alejandro Hernández Cordero, Andrej Orsula
+
+0.4.0 (2022-03-18)
+------------------
+
+0.3.0 (2022-03-16)
+-----------
+
+0.2.0 (2022-02-17)
+------------------
+* Merge pull request `#36 <https://github.com/ignitionrobotics/ign_ros2_control/issues/36>`_ from ignitionrobotics/ahcorde/foxy_to_galactic
+  Foxy -> Galactic
+* Fixed galactic dependency
+* Merge remote-tracking branch 'origin/foxy' into ahcorde/foxy_to_galactic
 * Contributors: Alejandro Hernández Cordero
 
 0.1.2 (2022-02-14)
