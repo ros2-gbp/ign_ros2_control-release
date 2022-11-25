@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <memory>
-
 #include <rclcpp/rclcpp.hpp>
 
 #include <geometry_msgs/msg/twist.hpp>
+
+#include <memory>
 
 using namespace std::chrono_literals;
 
@@ -34,11 +34,11 @@ int main(int argc, char * argv[])
 
   geometry_msgs::msg::Twist command;
 
-  command.linear.x = 0.1;
+  command.linear.x = 0.02;
   command.linear.y = 0.0;
   command.linear.z = 0.0;
 
-  command.angular.x = 0.1;
+  command.angular.x = 0.0;
   command.angular.y = 0.0;
   command.angular.z = 0.0;
 

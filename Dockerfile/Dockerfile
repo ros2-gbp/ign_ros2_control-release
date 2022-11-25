@@ -1,25 +1,18 @@
-FROM ubuntu:22.04
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV IGNITION_VERSION fortress
+FROM osrf/ros:foxy-desktop
 
 # Make sure everything is up to date before building from source
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
-    gnupg \
+    gnupg2 \
     lsb-release \
     wget \
     curl \
-    git \
-    ca-certificates \
-    build-essential \
-    cmake \
   && apt-get clean
 
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
+RUN sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list' && \
+  curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
   apt-get update && apt-get install -q -y --no-install-recommends \
     python3-colcon-ros \
     python3-colcon-common-extensions \
@@ -28,12 +21,12 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
 
 RUN mkdir -p /home/ros2_ws/src \
     && cd /home/ros2_ws/src \
-    && git clone https://github.com/ros-controls/gz_ros2_control/ \
-    && rosdep init && rosdep update \
-    && rosdep install --from-paths ./ -i -y --rosdistro rolling
+    && git clone https://github.com/ignitionrobotics/ign_ros2_control/ -b foxy \
+    && rosdep update \
+    && rosdep install --from-paths ./ -i -y --rosdistro foxy
 
 RUN cd /home/ros2_ws/ \
-  && . /opt/ros/rolling/setup.sh \
+  && . /opt/ros/foxy/setup.sh \
   && colcon build --merge-install
 
 COPY entrypoint.sh /entrypoint.sh

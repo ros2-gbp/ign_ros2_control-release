@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
+#include <controller_manager/controller_manager.hpp>
+
+#include <hardware_interface/resource_manager.hpp>
+#include <hardware_interface/component_parser.hpp>
+#include <hardware_interface/types/hardware_interface_type_values.hpp>
 
 #include <ignition/gazebo/components/Joint.hh>
 #include <ignition/gazebo/components/JointType.hh>
@@ -27,15 +27,15 @@
 
 #include <ignition/plugin/Register.hh>
 
-#include <controller_manager/controller_manager.hpp>
-
-#include <hardware_interface/resource_manager.hpp>
-#include <hardware_interface/component_parser.hpp>
-#include <hardware_interface/types/hardware_interface_type_values.hpp>
-
 #include <pluginlib/class_loader.hpp>
 
 #include <rclcpp/rclcpp.hpp>
+
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "ign_ros2_control/ign_ros2_control_plugin.hpp"
 #include "ign_ros2_control/ign_system.hpp"
@@ -140,7 +140,7 @@ IgnitionROS2ControlPluginPrivate::GetEnabledJoints(
         {
           RCLCPP_INFO(
             node_->get_logger(),
-            "[ign_ros2_control] Fixed joint [%s] (Entity=%lu)] is skipped",
+            "[ign_ros2_control] Fixed joint [%s] (Entity=%d)] is skipped",
             jointName.c_str(), jointEntity);
           continue;
         }
@@ -151,7 +151,7 @@ IgnitionROS2ControlPluginPrivate::GetEnabledJoints(
         {
           RCLCPP_WARN(
             node_->get_logger(),
-            "[ign_ros2_control] Joint [%s] (Entity=%lu)] is of unsupported type."
+            "[ign_ros2_control] Joint [%s] (Entity=%d)] is of unsupported type."
             " Only joints with a single axis are supported.",
             jointName.c_str(), jointEntity);
           continue;
@@ -160,7 +160,7 @@ IgnitionROS2ControlPluginPrivate::GetEnabledJoints(
         {
           RCLCPP_WARN(
             node_->get_logger(),
-            "[ign_ros2_control] Joint [%s] (Entity=%lu)] is of unknown type",
+            "[ign_ros2_control] Joint [%s] (Entity=%d)] is of unknown type",
             jointName.c_str(), jointEntity);
           continue;
         }
@@ -254,7 +254,7 @@ void IgnitionROS2ControlPlugin::Configure(
   if (!model.Valid(_ecm)) {
     RCLCPP_ERROR(
       this->dataPtr->node_->get_logger(),
-      "[Ignition ROS 2 Control] Failed to initialize because [%s] (Entity=%lu)] is not a model."
+      "[Ignition ROS 2 Control] Failed to initialize because [%s] (Entity=%u)] is not a model."
       "Please make sure that Ignition ROS 2 Control is attached to a valid model.",
       model.Name(_ecm).c_str(), _entity);
     return;
@@ -270,6 +270,18 @@ void IgnitionROS2ControlPlugin::Configure(
     return;
   }
 
+  std::vector<std::string> arguments = {"--ros-args"};
+
+  auto sdfPtr = const_cast<sdf::Element *>(_sdf.get());
+
+  sdf::ElementPtr argument_sdf = sdfPtr->GetElement("parameters");
+  while (argument_sdf) {
+    std::string argument = argument_sdf->Get<std::string>();
+    arguments.push_back(RCL_PARAM_FILE_FLAG);
+    arguments.push_back(argument);
+    argument_sdf = argument_sdf->GetNextElement("parameters");
+  }
+
   // Get controller manager node name
   std::string controllerManagerNodeName{"controller_manager"};
 
@@ -278,9 +290,6 @@ void IgnitionROS2ControlPlugin::Configure(
   if (!controllerManagerPrefixNodeName.empty()) {
     controllerManagerNodeName = controllerManagerPrefixNodeName + "_" + controllerManagerNodeName;
   }
-
-  std::vector<std::string> arguments = {"--ros-args", "--params-file", paramFileName};
-  auto sdfPtr = const_cast<sdf::Element *>(_sdf.get());
 
   if (sdfPtr->HasElement("ros")) {
     sdf::ElementPtr sdfRos = sdfPtr->GetElement("ros");
@@ -355,10 +364,10 @@ void IgnitionROS2ControlPlugin::Configure(
   // setup actuators and mechanism control node.
   // This call will block if ROS is not properly initialized.
   std::string urdf_string;
-  std::vector<hardware_interface::HardwareInfo> control_hardware_info;
+  std::vector<hardware_interface::HardwareInfo> control_hardware;
   try {
     urdf_string = this->dataPtr->getURDF();
-    control_hardware_info = hardware_interface::parse_control_resources_from_urdf(urdf_string);
+    control_hardware = hardware_interface::parse_control_resources_from_urdf(urdf_string);
   } catch (const std::runtime_error & ex) {
     RCLCPP_ERROR_STREAM(
       this->dataPtr->node_->get_logger(),
@@ -381,15 +390,15 @@ void IgnitionROS2ControlPlugin::Configure(
     return;
   }
 
-  for (unsigned int i = 0; i < control_hardware_info.size(); ++i) {
-    std::string robot_hw_sim_type_str_ = control_hardware_info[i].hardware_class_type;
+  for (unsigned int i = 0; i < control_hardware.size(); ++i) {
+    std::string robot_hw_sim_type_str_ = control_hardware[i].hardware_class_type;
     auto ignitionSystem = std::unique_ptr<ign_ros2_control::IgnitionSystemInterface>(
       this->dataPtr->robot_hw_sim_loader_->createUnmanagedInstance(robot_hw_sim_type_str_));
 
     if (!ignitionSystem->initSim(
         this->dataPtr->node_,
         enabledJoints,
-        control_hardware_info[i],
+        control_hardware[i],
         _ecm,
         this->dataPtr->update_rate))
     {
@@ -398,14 +407,8 @@ void IgnitionROS2ControlPlugin::Configure(
       return;
     }
 
-    resource_manager_->import_component(std::move(ignitionSystem), control_hardware_info[i]);
-
-    rclcpp_lifecycle::State state(
-      lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE,
-      hardware_interface::lifecycle_state_names::ACTIVE);
-    resource_manager_->set_component_state(control_hardware_info[i].name, state);
+    resource_manager_->import_component(std::move(ignitionSystem));
   }
-
   // Create the controller manager
   RCLCPP_INFO(this->dataPtr->node_->get_logger(), "Loading controller_manager");
   this->dataPtr->controller_manager_.reset(
@@ -427,6 +430,10 @@ void IgnitionROS2ControlPlugin::Configure(
   this->dataPtr->control_period_ = rclcpp::Duration(
     std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / static_cast<double>(this->dataPtr->update_rate))));
+
+  // Force setting of use_sime_time parameter
+  this->dataPtr->controller_manager_->set_parameter(
+    rclcpp::Parameter("use_sim_time", rclcpp::ParameterValue(true)));
 
   this->dataPtr->entity_ = _entity;
 }
@@ -457,12 +464,9 @@ void IgnitionROS2ControlPlugin::PreUpdate(
     warned = true;
   }
 
-  rclcpp::Time sim_time_ros(std::chrono::duration_cast<std::chrono::nanoseconds>(
-      _info.simTime).count(), RCL_ROS_TIME);
-  rclcpp::Duration sim_period = sim_time_ros - this->dataPtr->last_update_sim_time_ros_;
   // Always set commands on joints, otherwise at low control frequencies the joints tremble
   // as they are updated at a fraction of gazebo sim time
-  this->dataPtr->controller_manager_->write(sim_time_ros, sim_period);
+  this->dataPtr->controller_manager_->write();
 }
 
 //////////////////////////////////////////////////
@@ -480,8 +484,8 @@ void IgnitionROS2ControlPlugin::PostUpdate(
     auto ign_controller_manager =
       std::dynamic_pointer_cast<ign_ros2_control::IgnitionSystemInterface>(
       this->dataPtr->controller_manager_);
-    this->dataPtr->controller_manager_->read(sim_time_ros, sim_period);
-    this->dataPtr->controller_manager_->update(sim_time_ros, sim_period);
+    this->dataPtr->controller_manager_->read();
+    this->dataPtr->controller_manager_->update();
   }
 }
 }  // namespace ign_ros2_control
