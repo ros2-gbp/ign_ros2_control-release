@@ -1,4 +1,4 @@
-# Copyright 2021 Open Source Robotics Foundation, Inc.
+# Copyright 2022 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Author: Denis Stogl (Stogl Robotics Consulting)
+#
 
 import os
 
@@ -30,7 +33,7 @@ import xacro
 
 
 def generate_launch_description():
-    # Launch Arguments
+    # Launch arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default=True)
 
     ignition_ros2_control_demos_path = os.path.join(
@@ -38,7 +41,7 @@ def generate_launch_description():
 
     xacro_file = os.path.join(ignition_ros2_control_demos_path,
                               'urdf',
-                              'test_cart_position.xacro.urdf')
+                              'test_gripper_mimic_joint.xacro.urdf')
 
     doc = xacro.parse(open(xacro_file))
     xacro.process_doc(doc)
@@ -56,7 +59,7 @@ def generate_launch_description():
         executable='create',
         output='screen',
         arguments=['-string', doc.toxml(),
-                   '-name', 'cartpole',
+                   '-name', 'gripper',
                    '-allow_renaming', 'true'],
     )
 
@@ -66,9 +69,9 @@ def generate_launch_description():
         output='screen'
     )
 
-    load_joint_trajectory_controller = ExecuteProcess(
+    load_gripper_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'joint_trajectory_controller'],
+             'gripper_controller'],
         output='screen'
     )
 
@@ -88,7 +91,7 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=load_joint_state_broadcaster,
-                on_exit=[load_joint_trajectory_controller],
+                on_exit=[load_gripper_controller],
             )
         ),
         node_robot_state_publisher,

@@ -1,4 +1,4 @@
-// Copyright 2021 Open Source Robotics Foundation, Inc.
+// Copyright 2022 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,22 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// Author: Denis Štogl (Stogl Robotics Consulting)
+//
 
 #include <memory>
+#include <string>
+#include <vector>
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
-#include <std_msgs/msg/float64_multi_array.hpp>
+#include "std_msgs/msg/float64_multi_array.hpp"
+
+std::shared_ptr<rclcpp::Node> node;
 
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  std::shared_ptr<rclcpp::Node> node =
-    std::make_shared<rclcpp::Node>("effort_test_node");
+  node = std::make_shared<rclcpp::Node>("gripper_test_node");
 
   auto publisher = node->create_publisher<std_msgs::msg::Float64MultiArray>(
-    "/effort_controllers/commands", 10);
+    "/gripper_controller/commands", 10);
 
   RCLCPP_INFO(node->get_logger(), "node created");
 
@@ -38,11 +44,11 @@ int main(int argc, char * argv[])
   publisher->publish(commands);
   std::this_thread::sleep_for(1s);
 
-  commands.data[0] = 100;
+  commands.data[0] = 0.38;
   publisher->publish(commands);
   std::this_thread::sleep_for(1s);
 
-  commands.data[0] = -200;
+  commands.data[0] = 0.19;
   publisher->publish(commands);
   std::this_thread::sleep_for(1s);
 

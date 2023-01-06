@@ -1,4 +1,4 @@
-# Copyright 2021 Open Source Robotics Foundation, Inc.
+# Copyright 2022 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
@@ -38,17 +37,19 @@ def generate_launch_description():
 
     xacro_file = os.path.join(ignition_ros2_control_demos_path,
                               'urdf',
-                              'test_cart_position.xacro.urdf')
+                              'test_tricycle_drive.xacro.urdf')
 
     doc = xacro.parse(open(xacro_file))
     xacro.process_doc(doc)
     params = {'robot_description': doc.toxml()}
 
+    print(params)
+
     node_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[params]
+        parameters=[params],
     )
 
     ignition_spawn_entity = Node(
@@ -60,7 +61,7 @@ def generate_launch_description():
                    '-allow_renaming', 'true'],
     )
 
-    load_joint_state_broadcaster = ExecuteProcess(
+    load_joint_state_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'joint_state_broadcaster'],
         output='screen'
@@ -68,7 +69,7 @@ def generate_launch_description():
 
     load_joint_trajectory_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'joint_trajectory_controller'],
+             'tricycle_controller'],
         output='screen'
     )
 
@@ -82,12 +83,12 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=ignition_spawn_entity,
-                on_exit=[load_joint_state_broadcaster],
+                on_exit=[load_joint_state_controller],
             )
         ),
         RegisterEventHandler(
             event_handler=OnProcessExit(
-                target_action=load_joint_state_broadcaster,
+                target_action=load_joint_state_controller,
                 on_exit=[load_joint_trajectory_controller],
             )
         ),

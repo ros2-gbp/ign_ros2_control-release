@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
 
 #include <control_msgs/action/follow_joint_trajectory.hpp>
-
-#include <memory>
-#include <string>
-#include <vector>
 
 std::shared_ptr<rclcpp::Node> node;
 bool common_goal_accepted = false;
@@ -27,8 +27,8 @@ rclcpp_action::ResultCode common_resultcode = rclcpp_action::ResultCode::UNKNOWN
 int common_action_result_code = control_msgs::action::FollowJointTrajectory_Result::SUCCESSFUL;
 
 void common_goal_response(
-  std::shared_future<rclcpp_action::ClientGoalHandle
-  <control_msgs::action::FollowJointTrajectory>::SharedPtr> future)
+  rclcpp_action::ClientGoalHandle
+  <control_msgs::action::FollowJointTrajectory>::SharedPtr future)
 {
   RCLCPP_DEBUG(
     node->get_logger(), "common_goal_response time: %f",
@@ -112,7 +112,7 @@ int main(int argc, char * argv[])
   point.time_from_start = rclcpp::Duration::from_seconds(0.0);  // start asap
   point.positions.resize(joint_names.size());
 
-  point.positions[0] = 0.0;
+  point.positions[0] = 5.0;
 
   trajectory_msgs::msg::JointTrajectoryPoint point2;
   point2.time_from_start = rclcpp::Duration::from_seconds(1.0);

@@ -1,4 +1,4 @@
-// Copyright 2021 Open Source Robotics Foundation, Inc.
+// Copyright 2022 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,39 +16,37 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <std_msgs/msg/float64_multi_array.hpp>
+#include <geometry_msgs/msg/twist.hpp>
+
+using namespace std::chrono_literals;
 
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
   std::shared_ptr<rclcpp::Node> node =
-    std::make_shared<rclcpp::Node>("effort_test_node");
+    std::make_shared<rclcpp::Node>("tricycle_drive_test_node");
 
-  auto publisher = node->create_publisher<std_msgs::msg::Float64MultiArray>(
-    "/effort_controllers/commands", 10);
+  auto publisher = node->create_publisher<geometry_msgs::msg::Twist>(
+    "/tricycle_controller/cmd_vel", 10);
 
   RCLCPP_INFO(node->get_logger(), "node created");
 
-  std_msgs::msg::Float64MultiArray commands;
+  geometry_msgs::msg::Twist command;
 
-  using namespace std::chrono_literals;
+  command.linear.x = 0.2;
+  command.linear.y = 0.0;
+  command.linear.z = 0.0;
 
-  commands.data.push_back(0);
-  publisher->publish(commands);
-  std::this_thread::sleep_for(1s);
+  command.angular.x = 0.0;
+  command.angular.y = 0.0;
+  command.angular.z = 0.1;
 
-  commands.data[0] = 100;
-  publisher->publish(commands);
-  std::this_thread::sleep_for(1s);
-
-  commands.data[0] = -200;
-  publisher->publish(commands);
-  std::this_thread::sleep_for(1s);
-
-  commands.data[0] = 0;
-  publisher->publish(commands);
-  std::this_thread::sleep_for(1s);
+  while (1) {
+    publisher->publish(command);
+    std::this_thread::sleep_for(50ms);
+    rclcpp::spin_some(node);
+  }
   rclcpp::shutdown();
 
   return 0;

@@ -16,17 +16,17 @@
 #ifndef IGN_ROS2_CONTROL__IGN_SYSTEM_INTERFACE_HPP_
 #define IGN_ROS2_CONTROL__IGN_SYSTEM_INTERFACE_HPP_
 
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include <ignition/gazebo/System.hh>
 
 #include <hardware_interface/system_interface.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 
 #include <rclcpp/rclcpp.hpp>
-
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
 
 namespace ign_ros2_control
 {
