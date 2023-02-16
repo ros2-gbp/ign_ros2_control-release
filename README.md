@@ -1,3 +1,28 @@
+## ign_ros2_control (humble) - 0.4.3-2
+
+The packages in the `ign_ros2_control` repository were released into the `humble` distro by running `/usr/local/bin/bloom-release --rosdistro humble ign_ros2_control --edit` on `Thu, 16 Feb 2023 16:16:03 -0000`
+
+These packages were released:
+- `ign_ros2_control`
+- `ign_ros2_control_demos`
+
+Version of package(s) in repository `ign_ros2_control`:
+
+- upstream repository: https://github.com/ros-controls/gz_ros2_control
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `0.4.3-1`
+- new version: `0.4.3-2`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.9.0`
+- vcstools version: `0.1.42`
+
+
 ## ign_ros2_control (humble) - 0.4.3-1
 
 The packages in the `ign_ros2_control` repository were released into the `humble` distro by running `/usr/local/bin/bloom-release --rosdistro humble ign_ros2_control --edit` on `Thu, 16 Feb 2023 16:13:54 -0000`
