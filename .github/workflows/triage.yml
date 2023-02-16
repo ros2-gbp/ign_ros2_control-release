@@ -16,3 +16,4 @@ jobs:
           COLUMN: Inbox
           GITHUB_TOKEN: ${{ secrets.TRIAGE_TOKEN }}
           CHECK_ORG_PROJECT: true
+
