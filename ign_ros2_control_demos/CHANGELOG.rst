@@ -2,6 +2,20 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.4.4 (2023-03-28)
+------------------
+* Merge pull request `#121 <https://github.com/ros-controls/gz_ros2_control/issues/121>`_ from livanov93/port-master-to-humble
+* Fix gripper mimic joint example.
+* Pre-commit fix for tricycle configuration.
+* Replace ros_ign_gazebo with ros_gz_sim
+* use ros_gz_sim
+* Fix Docker entrypoint and add launch CLI to dependencites (`#84 <https://github.com/ros-controls/gz_ros2_control/issues/84>`_)
+* Add support for mimic joints. (`#33 <https://github.com/ros-controls/gz_ros2_control/issues/33>`_)
+* Add tricycle demo (`#80 <https://github.com/ros-controls/gz_ros2_control/issues/80>`_)
+* Fix setting initial values if command interfaces are not defined. (`#73 <https://github.com/ros-controls/gz_ros2_control/issues/73>`_)
+* fix demo launch (`#75 <https://github.com/ros-controls/gz_ros2_control/issues/75>`_)
+* Contributors: Alejandro Hernández Cordero, Andrej Orsula, Bence Magyar, Denis Štogl, Ian Chen, Krzysztof Wojciechowski, Lovro Ivanov, Maciej Bednarczyk, Polgár András, Tony Najjar
+
 0.4.3 (2023-02-16)
 ------------------
 * Add tricycle example to the `humble` branch `#119 <https://github.com/ros-controls/gz_ros2_control/issues/119>`_ from azazdeaz/humble
@@ -15,7 +29,7 @@ Changelog for package ign_ros2_control_demos
 * Remove URDF dependency (`#56 <https://github.com/ros-controls/gz_ros2_control/issues/56>`_)
 * Use Ubuntu Jammy in CI (`#47 <https://github.com/ros-controls/gz_ros2_control/issues/47>`_)
 * Add support for initial_values for hardware interfaces when starting simulation. (`#27 <https://github.com/ros-controls/gz_ros2_control/issues/27>`_)
-* Contributors: Alejandro Hernández Cordero, Andrej Orsula, Bence Magyar, Denis Štogl, Ian Chen, Maciej Bednarczyk, Polgár András, Tony Najjar
+* Contributors: Alejandro Hernández Cordero, Andrej Orsula, Bence Magyar, Denis Štogl, Maciej Bednarczyk, ahcorde
 
 0.4.0 (2022-03-18)
 ------------------
