@@ -270,31 +270,35 @@ void IgnitionROS2ControlPlugin::Configure(
     return;
   }
 
+  std::vector<std::string> arguments = {"--ros-args"};
+
+  auto sdfPtr = const_cast<sdf::Element *>(_sdf.get());
+
+  sdf::ElementPtr argument_sdf = sdfPtr->GetElement("parameters");
+  while (argument_sdf) {
+    std::string argument = argument_sdf->Get<std::string>();
+    arguments.push_back(RCL_PARAM_FILE_FLAG);
+    arguments.push_back(argument);
+    argument_sdf = argument_sdf->GetNextElement("parameters");
+  }
+
   // Get controller manager node name
   std::string controllerManagerNodeName{"controller_manager"};
 
-  std::string controllerManagerPrefixNodeName =
-    _sdf->Get<std::string>("controller_manager_prefix_node_name");
-  if (!controllerManagerPrefixNodeName.empty()) {
-    controllerManagerNodeName = controllerManagerPrefixNodeName + "_" + controllerManagerNodeName;
-  }
-
-  std::vector<std::string> arguments = {"--ros-args", "--params-file", paramFileName};
-  auto sdfPtr = const_cast<sdf::Element *>(_sdf.get());
-
+  std::string ns = "/";
   if (sdfPtr->HasElement("ros")) {
     sdf::ElementPtr sdfRos = sdfPtr->GetElement("ros");
 
     // Set namespace if tag is present
     if (sdfRos->HasElement("namespace")) {
-      std::string ns = sdfRos->GetElement("namespace")->Get<std::string>();
+      ns = sdfRos->GetElement("namespace")->Get<std::string>();
       // prevent exception: namespace must be absolute, it must lead with a '/'
       if (ns.empty() || ns[0] != '/') {
         ns = '/' + ns;
       }
-      std::string ns_arg = std::string("__ns:=") + ns;
-      arguments.push_back(RCL_REMAP_FLAG);
-      arguments.push_back(ns_arg);
+      if (ns.length() > 1) {
+        this->dataPtr->robot_description_node_ = ns + "/" + this->dataPtr->robot_description_node_;
+      }
     }
 
     // Get list of remapping rules from SDF
@@ -316,14 +320,14 @@ void IgnitionROS2ControlPlugin::Configure(
     argv.push_back(reinterpret_cast<const char *>(arg.data()));
   }
 
+  // Create a default context, if not already
   if (!rclcpp::ok()) {
     rclcpp::init(static_cast<int>(argv.size()), argv.data());
-    std::string node_name = "ignition_ros_control";
-    if (!controllerManagerPrefixNodeName.empty()) {
-      node_name = controllerManagerPrefixNodeName + "_" + node_name;
-    }
-    this->dataPtr->node_ = rclcpp::Node::make_shared(node_name);
   }
+
+  std::string node_name = "gz_ros2_control";
+
+  this->dataPtr->node_ = rclcpp::Node::make_shared(node_name, ns);
   this->dataPtr->executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
   this->dataPtr->executor_->add_node(this->dataPtr->node_);
   this->dataPtr->stop_ = false;
@@ -412,7 +416,8 @@ void IgnitionROS2ControlPlugin::Configure(
     new controller_manager::ControllerManager(
       std::move(resource_manager_),
       this->dataPtr->executor_,
-      controllerManagerNodeName));
+      controllerManagerNodeName,
+      this->dataPtr->node_->get_namespace()));
   this->dataPtr->executor_->add_node(this->dataPtr->controller_manager_);
 
   if (!this->dataPtr->controller_manager_->has_parameter("update_rate")) {
@@ -427,6 +432,10 @@ void IgnitionROS2ControlPlugin::Configure(
   this->dataPtr->control_period_ = rclcpp::Duration(
     std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / static_cast<double>(this->dataPtr->update_rate))));
+
+  // Force setting of use_sime_time parameter
+  this->dataPtr->controller_manager_->set_parameter(
+    rclcpp::Parameter("use_sim_time", rclcpp::ParameterValue(true)));
 
   this->dataPtr->entity_ = _entity;
 }
