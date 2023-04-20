@@ -644,6 +644,8 @@ hardware_interface::return_type IgnitionSystem::write(
           ignition::gazebo::components::JointVelocityCmd({target_vel}));
       } else if (!vel->Data().empty()) {
         vel->Data()[0] = target_vel;
+      } else if (!vel->Data().empty()) {
+        vel->Data()[0] = target_vel;
       }
     }
   }
