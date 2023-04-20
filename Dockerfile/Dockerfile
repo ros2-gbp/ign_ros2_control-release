@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV IGNITION_VERSION fortress
-ENV ROS_DISTRO humble
+ENV ROS_DISTRO rolling
 
 # Make sure everything is up to date before building from source
 RUN apt-get update \
