@@ -97,7 +97,7 @@ tracks:
     name: upstream
     patches: null
     release_inc: '4'
-    release_repo_url: null
+    release_repo_url: https://github.com/ros2-gbp/ign_ros2_control-release.git
     release_tag: :{version}
     ros_distro: iron
     vcs_type: git
