@@ -297,7 +297,19 @@ void GazeboSimROS2ControlPlugin::Configure(
 
   // Get controller manager node name
   std::string controllerManagerNodeName{"controller_manager"};
+
+  if (sdfPtr->HasElement("controller_manager_name")) {
+    controllerManagerNodeName = sdfPtr->GetElement("controller_manager_name")->Get<std::string>();
+  }
+
   std::string ns = "/";
+
+  // Hold joints if no control mode is active?
+  bool hold_joints = true;  // default
+  if (sdfPtr->HasElement("hold_joints")) {
+    hold_joints =
+      sdfPtr->GetElement("hold_joints")->Get<bool>();
+  }
 
   if (sdfPtr->HasElement("ros")) {
     sdf::ElementPtr sdfRos = sdfPtr->GetElement("ros");
@@ -402,8 +414,41 @@ void GazeboSimROS2ControlPlugin::Configure(
 
   for (unsigned int i = 0; i < control_hardware_info.size(); ++i) {
     std::string robot_hw_sim_type_str_ = control_hardware_info[i].hardware_plugin_name;
-    auto gzSimSystem = std::unique_ptr<gz_ros2_control::GazeboSimSystemInterface>(
-      this->dataPtr->robot_hw_sim_loader_->createUnmanagedInstance(robot_hw_sim_type_str_));
+    RCLCPP_DEBUG(
+      this->dataPtr->node_->get_logger(), "Load hardware interface %s ...",
+      robot_hw_sim_type_str_.c_str());
+
+    std::unique_ptr<gz_ros2_control::GazeboSimSystemInterface> gzSimSystem;
+    try {
+      gzSimSystem = std::unique_ptr<gz_ros2_control::GazeboSimSystemInterface>(
+        this->dataPtr->robot_hw_sim_loader_->createUnmanagedInstance(robot_hw_sim_type_str_));
+    } catch (pluginlib::PluginlibException & ex) {
+      RCLCPP_ERROR(
+        this->dataPtr->node_->get_logger(),
+        "The plugin failed to load for some reason. Error: %s\n",
+        ex.what());
+      continue;
+    }
+
+    try {
+      this->dataPtr->node_->declare_parameter("hold_joints", rclcpp::ParameterValue(hold_joints));
+    } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
+      RCLCPP_ERROR(
+        this->dataPtr->node_->get_logger(), "Parameter 'hold_joints' has already been declared, %s",
+        e.what());
+    } catch (const rclcpp::exceptions::InvalidParametersException & e) {
+      RCLCPP_ERROR(
+        this->dataPtr->node_->get_logger(), "Parameter 'hold_joints' has invalid name, %s",
+        e.what());
+    } catch (const rclcpp::exceptions::InvalidParameterValueException & e) {
+      RCLCPP_ERROR(
+        this->dataPtr->node_->get_logger(), "Parameter 'hold_joints' value is invalid, %s",
+        e.what());
+    } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+      RCLCPP_ERROR(
+        this->dataPtr->node_->get_logger(), "Parameter 'hold_joints' value has wrong type, %s",
+        e.what());
+    }
 
     if (!gzSimSystem->initSim(
         this->dataPtr->node_,
@@ -416,6 +461,9 @@ void GazeboSimROS2ControlPlugin::Configure(
         this->dataPtr->node_->get_logger(), "Could not initialize robot simulation interface");
       return;
     }
+    RCLCPP_DEBUG(
+      this->dataPtr->node_->get_logger(), "Initialized robot simulation interface %s!",
+      robot_hw_sim_type_str_.c_str());
 
     resource_manager_->import_component(std::move(gzSimSystem), control_hardware_info[i]);
 
