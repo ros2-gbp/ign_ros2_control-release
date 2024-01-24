@@ -2,16 +2,18 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.4 (2024-01-24)
+1.2.1 (2024-01-24)
 ------------------
-
-1.1.3 (2024-01-04)
-------------------
-* Rename cartpole with cart (`#214 <https://github.com/ros-controls/gz_ros2_control/issues/214>`_) (`#218 <https://github.com/ros-controls/gz_ros2_control/issues/218>`_)
+* Use parameters with ros_gz_sim::Create (`#211 <https://github.com/ros-controls/gz_ros2_control/issues/211>`_)
   Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  (cherry picked from commit 7e388fa5b7e7b099ac5c8a6a1b3e35d9c6a37d2a)
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Update diff_drive_example.launch.py (`#207 <https://github.com/ros-controls/gz_ros2_control/issues/207>`_) (`#208 <https://github.com/ros-controls/gz_ros2_control/issues/208>`_)
+* Contributors: Alejandro Hernández Cordero
+
+1.2.0 (2024-01-04)
+------------------
+* Rename cartpole with cart (`#214 <https://github.com/ros-controls/gz_ros2_control/issues/214>`_)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Replace Twist with TwistStamped (`#210 <https://github.com/ros-controls/gz_ros2_control/issues/210>`_)
+* Update diff_drive_example.launch.py (`#207 <https://github.com/ros-controls/gz_ros2_control/issues/207>`_) (`#209 <https://github.com/ros-controls/gz_ros2_control/issues/209>`_)
   (cherry picked from commit e20382adc627e609e277c45e74b21f603e629675)
   Co-authored-by: Jakub Delicat <109142865+delihus@users.noreply.github.com>
 * Support Harmonic (`#185 <https://github.com/ros-controls/gz_ros2_control/issues/185>`_)
