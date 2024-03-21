@@ -28,8 +28,10 @@
 #include <ignition/gazebo/components/JointForce.hh>
 #include <ignition/gazebo/components/JointForceCmd.hh>
 #include <ignition/gazebo/components/JointPosition.hh>
+#include <ignition/gazebo/components/JointPositionReset.hh>
 #include <ignition/gazebo/components/JointVelocity.hh>
 #include <ignition/gazebo/components/JointVelocityCmd.hh>
+#include <ignition/gazebo/components/JointVelocityReset.hh>
 #include <ignition/gazebo/components/LinearAcceleration.hh>
 #include <ignition/gazebo/components/Name.hh>
 #include <ignition/gazebo/components/ParentEntity.hh>
@@ -179,15 +181,14 @@ bool IgnitionSystem::initSim(
   this->dataPtr->joints_.resize(this->dataPtr->n_dof_);
 
   constexpr double default_gain = 0.1;
-  if (!this->nh_->get_parameter_or(
-      "position_proportional_gain",
-      this->dataPtr->position_proportional_gain_, default_gain))
-  {
-    RCLCPP_WARN_STREAM(
-      this->nh_->get_logger(),
-      "The position_proportional_gain parameter was not defined, defaulting to: " <<
-        default_gain);
-  }
+
+  this->dataPtr->position_proportional_gain_ = this->nh_->declare_parameter<double>(
+    "position_proportional_gain", default_gain);
+
+  RCLCPP_INFO_STREAM(
+    this->nh_->get_logger(),
+    "The position_proportional_gain has been set to: " <<
+      this->dataPtr->position_proportional_gain_);
 
   if (this->dataPtr->n_dof_ == 0) {
     RCLCPP_ERROR_STREAM(this->nh_->get_logger(), "There is no joint available");
@@ -284,14 +285,25 @@ bool IgnitionSystem::initSim(
 
     RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\tState:");
 
-    auto get_initial_value = [this](const hardware_interface::InterfaceInfo & interface_info) {
+    auto get_initial_value =
+      [this, joint_name](const hardware_interface::InterfaceInfo & interface_info) {
+        double initial_value{0.0};
         if (!interface_info.initial_value.empty()) {
-          double value = std::stod(interface_info.initial_value);
-          RCLCPP_INFO(this->nh_->get_logger(), "\t\t\t found initial value: %f", value);
-          return value;
-        } else {
-          return 0.0;
+          try {
+            initial_value = std::stod(interface_info.initial_value);
+            RCLCPP_INFO(this->nh_->get_logger(), "\t\t\t found initial value: %f", initial_value);
+          } catch (std::invalid_argument &) {
+            RCLCPP_ERROR_STREAM(
+              this->nh_->get_logger(),
+              "Failed converting initial_value string to real number for the joint "
+                << joint_name
+                << " and state interface " << interface_info.name
+                << ". Actual value of parameter: " << interface_info.initial_value
+                << ". Initial value will be set to 0.0");
+            throw std::invalid_argument("Failed converting initial_value string");
+          }
         }
+        return initial_value;
       };
 
     double initial_position = std::numeric_limits<double>::quiet_NaN();
@@ -365,9 +377,15 @@ bool IgnitionSystem::initSim(
       // independently of existence of command interface set initial value if defined
       if (!std::isnan(initial_position)) {
         this->dataPtr->joints_[j].joint_position = initial_position;
+        this->dataPtr->ecm->CreateComponent(
+          this->dataPtr->joints_[j].sim_joint,
+          ignition::gazebo::components::JointPositionReset({initial_position}));
       }
       if (!std::isnan(initial_velocity)) {
         this->dataPtr->joints_[j].joint_velocity = initial_velocity;
+        this->dataPtr->ecm->CreateComponent(
+          this->dataPtr->joints_[j].sim_joint,
+          ignition::gazebo::components::JointVelocityReset({initial_velocity}));
       }
     }
 
