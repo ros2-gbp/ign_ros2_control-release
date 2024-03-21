@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <unistd.h>
+
+#include <chrono>
 #include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -219,7 +223,7 @@ std::string IgnitionROS2ControlPluginPrivate::getURDF() const
         " URDF in parameter [%s] on the ROS param server.",
         this->robot_description_.c_str());
     }
-    usleep(100000);
+    std::this_thread::sleep_for(std::chrono::microseconds(100000));
   }
   RCLCPP_INFO(node_->get_logger(), "Received URDF from param server");
 
@@ -459,7 +463,7 @@ void IgnitionROS2ControlPlugin::Configure(
     std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / static_cast<double>(this->dataPtr->update_rate))));
 
-  // Force setting of use_sime_time parameter
+  // Force setting of use_sim_time parameter
   this->dataPtr->controller_manager_->set_parameter(
     rclcpp::Parameter("use_sim_time", rclcpp::ParameterValue(true)));
 
