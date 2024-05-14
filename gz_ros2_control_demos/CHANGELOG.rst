@@ -2,7 +2,7 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.3 (2024-05-14)
+1.3.0 (2024-05-14)
 ------------------
 * Update pendulum-example  (`#301 <https://github.com/ros-controls/gz_ros2_control/issues/301>`_)
   * Change initial pose of pendulum
