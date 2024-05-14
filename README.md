@@ -1,3 +1,29 @@
+## gz_ros2_control (jazzy) - 1.2.3-1
+
+The packages in the `gz_ros2_control` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy gz_ros2_control -e` on `Tue, 14 May 2024 11:51:04 -0000`
+
+These packages were released:
+- `gz_ros2_control`
+- `gz_ros2_control_demos`
+- `gz_ros2_control_tests`
+
+Version of package(s) in repository `gz_ros2_control`:
+
+- upstream repository: https://github.com/ros-controls/gz_ros2_control
+- release repository: https://github.com/ros2-gbp/ign_ros2_control-release.git
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.2.3-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.23.0`
+- rosdistro version: `0.9.1`
+- vcstools version: `0.1.42`
+
+
 ## gz_ros2_control (iron) - 1.1.7-1
 
 The packages in the `gz_ros2_control` repository were released into the `iron` distro by running `/usr/bin/bloom-release --rosdistro iron --track iron gz_ros2_control` on `Tue, 14 May 2024 11:44:53 -0000`
