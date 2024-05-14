@@ -31,7 +31,7 @@ To run the demo
 
   .. code-block:: shell
 
-    docker run -it --rm --name gz_ros2_control_demo --net host gz_ros2_control ros2 launch ign_ros2_control_demos cart_example_position.launch.py gui:=false
+    docker run -it --rm --name gz_ros2_control_demo --net host gz_ros2_control ros2 launch gz_ros2_control_demos cart_example_position.launch.py gui:=false
 
   Then on your local machine, you can run the Gazebo client:
 
@@ -204,7 +204,7 @@ The following is a basic configuration of the controllers:
 - ``joint_state_broadcaster``: This controller publishes the state of all resources registered to a ``hardware_interface::StateInterface`` to a topic of type ``sensor_msgs/msg/JointState``.
 - ``joint_trajectory_controller``: This controller creates an action called ``/joint_trajectory_controller/follow_joint_trajectory`` of type ``control_msgs::action::FollowJointTrajectory``.
 
-.. literalinclude:: ../ign_ros2_control_demos/config/cart_controller_position.yaml
+.. literalinclude:: ../gz_ros2_control_demos/config/cart_controller_position.yaml
    :language: yaml
 
 
