@@ -96,16 +96,19 @@ include:
 Using mimic joints in simulation
 -----------------------------------------------------------
 
-To use ``mimic`` joints in *gz_ros2_control* you should define its parameters to your URDF.
-We should include:
-
-* ``<mimic>`` tag to the mimicked joint `detailed manual <https://wiki.ros.org/urdf/XML/joint>`__
-* ``mimic`` and ``multiplier`` parameters to joint definition in ``<ros2_control>`` tag
+To use ``mimic`` joints in *gz_ros2_control* you should define its parameters in your URDF, i.e, set the ``<mimic>`` tag to the mimicked joint (see the `URDF specification <https://wiki.ros.org/urdf/XML/joint>`__)
 
 .. code-block:: xml
 
+  <joint name="right_finger_joint" type="prismatic">
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0 -0.48 1" rpy="0.0 0.0 0.0"/>
+    <parent link="base"/>
+    <child link="finger_right"/>
+    <limit effort="1000.0" lower="0" upper="0.38" velocity="10"/>
+  </joint>
   <joint name="left_finger_joint" type="prismatic">
-    <mimic joint="right_finger_joint"/>
+    <mimic joint="right_finger_joint" multiplier="1" offset="0"/>
     <axis xyz="0 1 0"/>
     <origin xyz="0.0 0.48 1" rpy="0.0 0.0 3.1415926535"/>
     <parent link="base"/>
@@ -113,16 +116,7 @@ We should include:
     <limit effort="1000.0" lower="0" upper="0.38" velocity="10"/>
   </joint>
 
-.. code-block:: xml
-
-  <joint name="left_finger_joint">
-    <param name="mimic">right_finger_joint</param>
-    <param name="multiplier">1</param>
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-    <state_interface name="velocity"/>
-    <state_interface name="effort"/>
-  </joint>
+The mimic joint must not have command interfaces configured in the ``<ros2_control>`` tag, but state interfaces can be configured.
 
 
 Add the gz_ros2_control plugin
@@ -147,6 +141,7 @@ robot hardware interfaces between *ros2_control* and Gazebo.
 The *gz_ros2_control* ``<plugin>`` tag also has the following optional child elements:
 
 * ``<parameters>``: YAML file with the configuration of the controllers
+* ``<hold_joints>``: if set to true (default), it will hold the joints' position if their interface was not claimed, e.g., the controller hasn't been activated yet.
 
 Default gz_ros2_control Behavior
 -----------------------------------------------------------
@@ -264,8 +259,19 @@ The following example shows a parallel gripper with a mimic joint:
 
 .. code-block:: shell
 
-  ros2 launch gz_ros2_control_demos gripper_mimic_joint_example.launch.py
+  ros2 launch gz_ros2_control_demos gripper_mimic_joint_example_position.launch.py
 
+.. image:: img/gz_gripper.gif
+  :alt: Gripper
+
+To demonstrate the setup of the initial position and a position-mimicked joint in
+case of an effort command interface of the joint to be mimicked, run
+
+.. code-block:: shell
+
+  ros2 launch gz_ros2_control_demos gripper_mimic_joint_example_effort.launch.py
+
+instead.
 
 Send example commands:
 

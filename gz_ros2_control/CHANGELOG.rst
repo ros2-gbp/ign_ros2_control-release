@@ -2,68 +2,51 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.7 (2024-05-14)
+1.2.3 (2024-05-14)
 ------------------
-* fixed target of ament_export_libraries (`#295 <https://github.com/ros-controls/gz_ros2_control/issues/295>`_) (`#299 <https://github.com/ros-controls/gz_ros2_control/issues/299>`_)
-  (cherry picked from commit db4d8b0aeb77a986fa392b53b4cf46603777452e)
-  Co-authored-by: Takashi Sato <t.sato17123@gmail.com>
-* Added parameters robot_param and robot_param_node (`#275 <https://github.com/ros-controls/gz_ros2_control/issues/275>`_) (`#281 <https://github.com/ros-controls/gz_ros2_control/issues/281>`_)
+* Use Gazebo ROS vendor packages (`#277 <https://github.com/ros-controls/gz_ros2_control/issues/277>`_)
+* fixed target of ament_export_libraries (`#295 <https://github.com/ros-controls/gz_ros2_control/issues/295>`_)
+* fixed install include (`#294 <https://github.com/ros-controls/gz_ros2_control/issues/294>`_)
+* Added parameters robot_param and robot_param_node (`#275 <https://github.com/ros-controls/gz_ros2_control/issues/275>`_) (`#280 <https://github.com/ros-controls/gz_ros2_control/issues/280>`_)
   (cherry picked from commit 53b6c74b02bf85860854a37f429b6e2ecf22a4be)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Update precommit config (backport `#271 <https://github.com/ros-controls/gz_ros2_control/issues/271>`_) (`#279 <https://github.com/ros-controls/gz_ros2_control/issues/279>`_)
-  * Update precommit config (`#271 <https://github.com/ros-controls/gz_ros2_control/issues/271>`_)
+* Rewrite mimic joints (`#276 <https://github.com/ros-controls/gz_ros2_control/issues/276>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-  (cherry picked from commit 492ed646010fc55a6acc32d07138ddda8824aff5)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Contributors: mergify[bot]
+* Fixed linter (`#264 <https://github.com/ros-controls/gz_ros2_control/issues/264>`_)
+* Fix `#259 <https://github.com/ros-controls/gz_ros2_control/issues/259>`_ - `ParameterAlreadyDeclaredException` for parameter `position_proportional_gain` (`#261 <https://github.com/ros-controls/gz_ros2_control/issues/261>`_)
+* Contributors: Addisu Z. Taddese, Alejandro Hernández Cordero, Christoph Fröhlich, Patrick Roncagliolo, Takashi Sato, mergify[bot]
 
-1.1.6 (2024-04-09)
+1.2.2 (2024-03-21)
 ------------------
-* Fix `#259 <https://github.com/ros-controls/gz_ros2_control/issues/259>`_ - `ParameterAlreadyDeclaredException` for parameter `position_proportional_gain` (backport `#261 <https://github.com/ros-controls/gz_ros2_control/issues/261>`_) (`#263 <https://github.com/ros-controls/gz_ros2_control/issues/263>`_)
-  Co-authored-by: Patrick Roncagliolo <ronca.pat@gmail.com>
-  Co-authored-by: Alejandro Hernandez Cordero <ahcorde@gmail.com>
-* Contributors: mergify[bot]
+* Fix typo (`#253 <https://github.com/ros-controls/gz_ros2_control/issues/253>`_)
+* Fix `#247 <https://github.com/ros-controls/gz_ros2_control/issues/247>`_ (`#248 <https://github.com/ros-controls/gz_ros2_control/issues/248>`_)
+* Reset Gazebo with initial joint positions and velocities (`#241 <https://github.com/ros-controls/gz_ros2_control/issues/241>`_)
+* Use portable versio for usleep (`#237 <https://github.com/ros-controls/gz_ros2_control/issues/237>`_)
+* Fix crashing due to an invalid parameter in the initial value (`#233 <https://github.com/ros-controls/gz_ros2_control/issues/233>`_)
+* Contributors: Alejandro Hernández Cordero, Graziato Davide, Ruddick Lawrence, Stephanie Eng
 
-1.1.5 (2024-03-21)
+1.2.1 (2024-01-24)
 ------------------
-* Fix typo (`#253 <https://github.com/ros-controls/gz_ros2_control/issues/253>`_) (`#255 <https://github.com/ros-controls/gz_ros2_control/issues/255>`_)
-  (cherry picked from commit a98cb2a8b72827b7c1669987d6a12d3f0b30a41e)
-  Co-authored-by: Stephanie Eng <stephanie-eng@users.noreply.github.com>
-* Fix `#247 <https://github.com/ros-controls/gz_ros2_control/issues/247>`_ (`#248 <https://github.com/ros-controls/gz_ros2_control/issues/248>`_) (`#251 <https://github.com/ros-controls/gz_ros2_control/issues/251>`_)
-  (cherry picked from commit 94745e6f5f051214ac9862051f9a918685f2c6b9)
-  Co-authored-by: Graziato Davide <85335579+Fixit-Davide@users.noreply.github.com>
-* Reset Gazebo with initial joint positions and velocities (`#241 <https://github.com/ros-controls/gz_ros2_control/issues/241>`_) (`#244 <https://github.com/ros-controls/gz_ros2_control/issues/244>`_)
-  (cherry picked from commit c5b0b9049ce75410e75d1828242c1dfd5b19bb80)
-  Co-authored-by: Ruddick Lawrence <679360+mrjogo@users.noreply.github.com>
-* Use portable versio for usleep (`#237 <https://github.com/ros-controls/gz_ros2_control/issues/237>`_) (`#239 <https://github.com/ros-controls/gz_ros2_control/issues/239>`_)
-  (cherry picked from commit 0bdf13e6986c613c99a595889a587da1db6d7f69)
+* Load the URDF to the resource_manager before parsing it to CM (`#222 <https://github.com/ros-controls/gz_ros2_control/issues/222>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Fix crashing due to an invalid parameter in the initial value (backport `#233 <https://github.com/ros-controls/gz_ros2_control/issues/233>`_) (`#235 <https://github.com/ros-controls/gz_ros2_control/issues/235>`_)
-  * Fix crashing due to an invalid parameter in the initial value (`#233 <https://github.com/ros-controls/gz_ros2_control/issues/233>`_)
-  (cherry picked from commit a3beadb014f62e0808033de2c5ad84e2428c36e9)
+* Use own implementation of `stod()` (`#220 <https://github.com/ros-controls/gz_ros2_control/issues/220>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Contributors: Alejandro Hernández Cordero, Ruddick Lawrence, Graziato Davide, Stephanie Eng, mergify[bot]
+* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
 
-1.1.4 (2024-01-24)
+1.2.0 (2024-01-04)
 ------------------
-* Load the URDF to the resource_manager before parsing it to CM (`#222 <https://github.com/ros-controls/gz_ros2_control/issues/222>`_) (`#226 <https://github.com/ros-controls/gz_ros2_control/issues/226>`_)
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-  (cherry picked from commit 5a948050563881dba20effec3ccb678e4f375529)
-  Co-authored-by: Sai Kishor Kothakota <saisastra3@gmail.com>
-* Contributors: mergify[bot]
-
-1.1.3 (2024-01-04)
-------------------
-* Add controller name parameter (backport `#212 <https://github.com/ros-controls/gz_ros2_control/issues/212>`_) (`#215 <https://github.com/ros-controls/gz_ros2_control/issues/215>`_)
+* Add controller name parameter (backport `#212 <https://github.com/ros-controls/gz_ros2_control/issues/212>`_) (`#216 <https://github.com/ros-controls/gz_ros2_control/issues/216>`_)
   Co-authored-by: Jakub Delicat <109142865+delihus@users.noreply.github.com>
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Fix stuck passive joints (`#184 <https://github.com/ros-controls/gz_ros2_control/issues/184>`_) (`#205 <https://github.com/ros-controls/gz_ros2_control/issues/205>`_)
+  Co-authored-by: Alejandro Hernandez Cordero <ahcorde@gmail.com>
+* Add hold_joints parameter (`#213 <https://github.com/ros-controls/gz_ros2_control/issues/213>`_)
+* Fix stuck passive joints (`#184 <https://github.com/ros-controls/gz_ros2_control/issues/184>`_)
+  * Fix stuck passive joints
+  * Update comment
+  * Fix variable naming
+  ---------
   Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  (cherry picked from commit 0a8d4464e15e4f13ea0673311c60a891d6a836ec)
-  Co-authored-by: Johannes Huemer <johannes.huemer@ait.ac.at>
 * Support Harmonic (`#185 <https://github.com/ros-controls/gz_ros2_control/issues/185>`_)
-* Contributors: Alejandro Hernández Cordero, mergify[bot]
+* Contributors: Alejandro Hernández Cordero, Johannes Huemer, mergify[bot]
 
 1.1.2 (2023-08-23)
 ------------------
