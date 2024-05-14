@@ -22,7 +22,6 @@
 #include <utility>
 #include <vector>
 
-#ifdef GZ_HEADERS
 #include <gz/sim/components/Joint.hh>
 #include <gz/sim/components/JointType.hh>
 #include <gz/sim/components/Name.hh>
@@ -30,15 +29,6 @@
 #include <gz/sim/components/World.hh>
 #include <gz/sim/Model.hh>
 #include <gz/plugin/Register.hh>
-#else
-#include <ignition/gazebo/components/Joint.hh>
-#include <ignition/gazebo/components/JointType.hh>
-#include <ignition/gazebo/components/Name.hh>
-#include <ignition/gazebo/components/ParentEntity.hh>
-#include <ignition/gazebo/components/World.hh>
-#include <ignition/gazebo/Model.hh>
-#include <ignition/plugin/Register.hh>
-#endif
 
 
 #include <controller_manager/controller_manager.hpp>
@@ -102,11 +92,9 @@ public:
   controller_manager_{nullptr};
 
   /// \brief String with the robot description param_name
-  // TODO(ahcorde): Add param in plugin tag
   std::string robot_description_ = "robot_description";
 
   /// \brief String with the name of the node that contains the robot_description
-  // TODO(ahcorde): Add param in plugin tag
   std::string robot_description_node_ = "robot_state_publisher";
 
   /// \brief Last time the update method was called
@@ -284,6 +272,23 @@ void GazeboSimROS2ControlPlugin::Configure(
       "Gazebo ros2 control found an empty parameters file. Failed to initialize.");
     return;
   }
+
+  // Get params from SDF
+  std::string robot_param_node = _sdf->Get<std::string>("robot_param_node");
+  if (!robot_param_node.empty()) {
+    this->dataPtr->robot_description_node_ = robot_param_node;
+  }
+  RCLCPP_INFO(
+    logger,
+    "robot_param_node is %s", this->dataPtr->robot_description_node_.c_str());
+
+  std::string robot_description = _sdf->Get<std::string>("robot_param");
+  if (!robot_description.empty()) {
+    this->dataPtr->robot_description_ = robot_description;
+  }
+  RCLCPP_INFO(
+    logger,
+    "robot_param_node is %s", this->dataPtr->robot_description_.c_str());
 
   std::vector<std::string> arguments = {"--ros-args"};
 
@@ -566,7 +571,6 @@ void GazeboSimROS2ControlPlugin::PostUpdate(
 }
 }  // namespace gz_ros2_control
 
-#ifdef GZ_HEADERS
 GZ_ADD_PLUGIN(
   gz_ros2_control::GazeboSimROS2ControlPlugin,
   gz::sim::System,
@@ -576,14 +580,3 @@ GZ_ADD_PLUGIN(
 GZ_ADD_PLUGIN_ALIAS(
   gz_ros2_control::GazeboSimROS2ControlPlugin,
   "ign_ros2_control::IgnitionROS2ControlPlugin")
-#else
-IGNITION_ADD_PLUGIN(
-  gz_ros2_control::GazeboSimROS2ControlPlugin,
-  ignition::gazebo::System,
-  gz_ros2_control::GazeboSimROS2ControlPlugin::ISystemConfigure,
-  gz_ros2_control::GazeboSimROS2ControlPlugin::ISystemPreUpdate,
-  gz_ros2_control::GazeboSimROS2ControlPlugin::ISystemPostUpdate)
-IGNITION_ADD_PLUGIN_ALIAS(
-  gz_ros2_control::GazeboSimROS2ControlPlugin,
-  "ign_ros2_control::IgnitionROS2ControlPlugin")
-#endif
