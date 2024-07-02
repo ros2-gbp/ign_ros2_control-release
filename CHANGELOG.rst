@@ -2,6 +2,37 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.8 (2024-07-02)
+------------------
+* Harden behavior if a joint is not found in the model (`#325 <https://github.com/ros-controls/gz_ros2_control/issues/325>`_) (`#332 <https://github.com/ros-controls/gz_ros2_control/issues/332>`_)
+  * Don't crash if a joint does not exist
+  (cherry picked from commit 5d2d5eb6c867875c3c8d00a03cd472eac176e67c)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Don't crash if a wrong config was detected (`#324 <https://github.com/ros-controls/gz_ros2_control/issues/324>`_) (`#329 <https://github.com/ros-controls/gz_ros2_control/issues/329>`_)
+  (cherry picked from commit ec1b95893fa933cb3e2cc5341bb65dd621645785)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Changed to use spin instead of spin_once to enable multithreading with MultiThreadedExecutor (`#315 <https://github.com/ros-controls/gz_ros2_control/issues/315>`_) (`#321 <https://github.com/ros-controls/gz_ros2_control/issues/321>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+  (cherry picked from commit 45035076408e6014cc911e8d4bc169572a25008c)
+  Co-authored-by: Takashi Sato <t.sato17123@gmail.com>
+* Contributors: mergify[bot]
+
+1.1.7 (2024-05-14)
+------------------
+* fixed target of ament_export_libraries (`#295 <https://github.com/ros-controls/gz_ros2_control/issues/295>`_) (`#299 <https://github.com/ros-controls/gz_ros2_control/issues/299>`_)
+  (cherry picked from commit db4d8b0aeb77a986fa392b53b4cf46603777452e)
+  Co-authored-by: Takashi Sato <t.sato17123@gmail.com>
+* Added parameters robot_param and robot_param_node (`#275 <https://github.com/ros-controls/gz_ros2_control/issues/275>`_) (`#281 <https://github.com/ros-controls/gz_ros2_control/issues/281>`_)
+  (cherry picked from commit 53b6c74b02bf85860854a37f429b6e2ecf22a4be)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Update precommit config (backport `#271 <https://github.com/ros-controls/gz_ros2_control/issues/271>`_) (`#279 <https://github.com/ros-controls/gz_ros2_control/issues/279>`_)
+  * Update precommit config (`#271 <https://github.com/ros-controls/gz_ros2_control/issues/271>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+  (cherry picked from commit 492ed646010fc55a6acc32d07138ddda8824aff5)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Contributors: mergify[bot]
+
 1.1.6 (2024-04-09)
 ------------------
 * Fix `#259 <https://github.com/ros-controls/gz_ros2_control/issues/259>`_ - `ParameterAlreadyDeclaredException` for parameter `position_proportional_gain` (backport `#261 <https://github.com/ros-controls/gz_ros2_control/issues/261>`_) (`#263 <https://github.com/ros-controls/gz_ros2_control/issues/263>`_)
