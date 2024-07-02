@@ -31,7 +31,7 @@ To run the demo
 
   .. code-block:: shell
 
-    docker run -it --rm --name gz_ros2_control_demo --net host gz_ros2_control ros2 launch gz_ros2_control_demos cart_example_position.launch.py gui:=false
+    docker run -it --rm --name gz_ros2_control_demo --net host gz_ros2_control ros2 launch ign_ros2_control_demos cart_example_position.launch.py gui:=false
 
   Then on your local machine, you can run the Gazebo client:
 
@@ -76,9 +76,9 @@ include:
 
 .. code-block:: xml
 
-  <ros2_control name="GazeboSimSystem" type="system">
+  <ros2_control name="IgnitionSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      <plugin>ign_ros2_control/IgnitionSystem</plugin>
     </hardware>
     <joint name="slider_to_cart">
       <command_interface name="effort">
@@ -172,9 +172,9 @@ robot model is loaded. For example, the following XML will load the default plug
 
 .. code-block:: xml
 
-  <ros2_control name="GazeboSimSystem" type="system">
+  <ros2_control name="IgnitionSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      <plugin>ign_ros2_control/IgnitionSystem</plugin>
     </hardware>
     ...
   <ros2_control>
@@ -204,7 +204,7 @@ The following is a basic configuration of the controllers:
 - ``joint_state_broadcaster``: This controller publishes the state of all resources registered to a ``hardware_interface::StateInterface`` to a topic of type ``sensor_msgs/msg/JointState``.
 - ``joint_trajectory_controller``: This controller creates an action called ``/joint_trajectory_controller/follow_joint_trajectory`` of type ``control_msgs::action::FollowJointTrajectory``.
 
-.. literalinclude:: ../gz_ros2_control_demos/config/cart_controller_position.yaml
+.. literalinclude:: ../ign_ros2_control_demos/config/cart_controller_position.yaml
    :language: yaml
 
 
