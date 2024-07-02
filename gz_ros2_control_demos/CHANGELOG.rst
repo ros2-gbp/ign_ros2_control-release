@@ -2,51 +2,58 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.4 (2024-06-02)
+1.1.8 (2024-07-02)
 ------------------
-* Ackermann steering example (`#349 <https://github.com/ros-controls/gz_ros2_control/issues/349>`_) (`#350 <https://github.com/ros-controls/gz_ros2_control/issues/350>`_)
+* Ackermann steering example (`#349 <https://github.com/ros-controls/gz_ros2_control/issues/349>`_) (`#351 <https://github.com/ros-controls/gz_ros2_control/issues/351>`_)
   (cherry picked from commit 3139a9065d9bc00413192b27a49e2fb5d4426c7e)
   Co-authored-by: huzaifa <84243533+huzzu7@users.noreply.github.com>
-* Rename variable in launch file (`#327 <https://github.com/ros-controls/gz_ros2_control/issues/327>`_) (`#339 <https://github.com/ros-controls/gz_ros2_control/issues/339>`_)
+* [tricycle] Rename variable in launch file (backport `#327 <https://github.com/ros-controls/gz_ros2_control/issues/327>`_) (`#337 <https://github.com/ros-controls/gz_ros2_control/issues/337>`_)
+  * Rename variable in launch file (`#327 <https://github.com/ros-controls/gz_ros2_control/issues/327>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
   (cherry picked from commit cd0b002c49e71be459f4e9f0a063b97fed195b28)
+  # Conflicts:
+  #	gz_ros2_control_demos/launch/tricycle_drive_example.launch.py
+  * Fixed merge
+  ---------
   Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* added color definitions (`#310 <https://github.com/ros-controls/gz_ros2_control/issues/310>`_) (`#311 <https://github.com/ros-controls/gz_ros2_control/issues/311>`_)
+* added color definitions (`#310 <https://github.com/ros-controls/gz_ros2_control/issues/310>`_) (`#313 <https://github.com/ros-controls/gz_ros2_control/issues/313>`_)
   (cherry picked from commit 7cb6fd901f373d6fcfa75ef23e43c6b9d7b186a7)
   Co-authored-by: Reza Kermani <kermani.areza@gmail.com>
 * Contributors: mergify[bot]
 
-1.2.3 (2024-05-14)
+1.1.7 (2024-05-14)
 ------------------
-* Update pendulum-example  (`#301 <https://github.com/ros-controls/gz_ros2_control/issues/301>`_)
+* Update pendulum-example  (`#301 <https://github.com/ros-controls/gz_ros2_control/issues/301>`_) (`#304 <https://github.com/ros-controls/gz_ros2_control/issues/304>`_)
   * Change initial pose of pendulum
   * Make position and effort version of pendulum equal
-* Use Gazebo ROS vendor packages (`#277 <https://github.com/ros-controls/gz_ros2_control/issues/277>`_)
-* Add cart-pole demo (`#289 <https://github.com/ros-controls/gz_ros2_control/issues/289>`_)
-* Rewrite mimic joints (`#276 <https://github.com/ros-controls/gz_ros2_control/issues/276>`_)
+  (cherry picked from commit 1e7721409e5e3d2c583868353a09929ca37bf860)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Add cart-pole demo (`#289 <https://github.com/ros-controls/gz_ros2_control/issues/289>`_) (`#291 <https://github.com/ros-controls/gz_ros2_control/issues/291>`_)
+  (cherry picked from commit 27af2108e77420dc46c83ac31658fccb67e33911)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Contributors: mergify[bot]
+
+1.1.6 (2024-04-09)
+------------------
+
+1.1.5 (2024-03-21)
+------------------
+* Add dep (`#256 <https://github.com/ros-controls/gz_ros2_control/issues/256>`_) (`#258 <https://github.com/ros-controls/gz_ros2_control/issues/258>`_)
+  (cherry picked from commit b35100db16e80ffb574c0266321800e2197136c3)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Contributors: mergify[bot]
+
+1.1.4 (2024-01-24)
+------------------
+
+1.1.3 (2024-01-04)
+------------------
+* Rename cartpole with cart (`#214 <https://github.com/ros-controls/gz_ros2_control/issues/214>`_) (`#218 <https://github.com/ros-controls/gz_ros2_control/issues/218>`_)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+  (cherry picked from commit 7e388fa5b7e7b099ac5c8a6a1b3e35d9c6a37d2a)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Fix flake8 (`#269 <https://github.com/ros-controls/gz_ros2_control/issues/269>`_)
-* Cleanup launch files and add example for .xml launch file. (`#266 <https://github.com/ros-controls/gz_ros2_control/issues/266>`_)
-* Contributors: Addisu Z. Taddese, Christoph Fröhlich, Dr. Denis
-
-1.2.2 (2024-03-21)
-------------------
-* Add dep (`#256 <https://github.com/ros-controls/gz_ros2_control/issues/256>`_)
-* Contributors: Christoph Fröhlich
-
-1.2.1 (2024-01-24)
-------------------
-* Use parameters with ros_gz_sim::Create (`#211 <https://github.com/ros-controls/gz_ros2_control/issues/211>`_)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-* Contributors: Alejandro Hernández Cordero
-
-1.2.0 (2024-01-04)
-------------------
-* Rename cartpole with cart (`#214 <https://github.com/ros-controls/gz_ros2_control/issues/214>`_)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-* Replace Twist with TwistStamped (`#210 <https://github.com/ros-controls/gz_ros2_control/issues/210>`_)
-* Update diff_drive_example.launch.py (`#207 <https://github.com/ros-controls/gz_ros2_control/issues/207>`_) (`#209 <https://github.com/ros-controls/gz_ros2_control/issues/209>`_)
+* Update diff_drive_example.launch.py (`#207 <https://github.com/ros-controls/gz_ros2_control/issues/207>`_) (`#208 <https://github.com/ros-controls/gz_ros2_control/issues/208>`_)
   (cherry picked from commit e20382adc627e609e277c45e74b21f603e629675)
   Co-authored-by: Jakub Delicat <109142865+delihus@users.noreply.github.com>
 * Support Harmonic (`#185 <https://github.com/ros-controls/gz_ros2_control/issues/185>`_)

@@ -1,10 +1,10 @@
-name: gz_ros2_control CI - Rolling
+name: gz_ros2_control CI - Iron
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ iron ]
   push:
-    branches: [ master ]
+    branches: [ iron ]
 
 jobs:
   build:
@@ -15,19 +15,19 @@ jobs:
         include:
           - docker-image: "ubuntu:22.04"
             gz-version: "fortress"
-            ros-distro: "rolling"
+            ros-distro: "iron"
             ros-repo-packages: ""
           - docker-image: "ubuntu:22.04"
             gz-version: "garden"
-            ros-distro: "rolling"
+            ros-distro: "iron"
             ros-repo-packages: ""
           - docker-image: "ubuntu:22.04"
             gz-version: "fortress"
-            ros-distro: "rolling"
+            ros-distro: "iron"
             ros-repo-packages: "-testing"
           - docker-image: "ubuntu:22.04"
             gz-version: "garden"
-            ros-distro: "rolling"
+            ros-distro: "iron"
             ros-repo-packages: "-testing"
 
     env:

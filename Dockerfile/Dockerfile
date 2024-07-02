@@ -1,7 +1,8 @@
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV ROS_DISTRO rolling
+ENV GZ_VERSION fortress
+ENV ROS_DISTRO iron
 
 # Make sure everything is up to date before building from source
 RUN apt-get update \
