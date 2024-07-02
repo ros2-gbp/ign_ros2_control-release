@@ -1,4 +1,4 @@
-# Copyright 2022 Open Source Robotics Foundation, Inc.
+# Copyright 2024 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ def generate_launch_description():
             ' ',
             PathJoinSubstitution(
                 [FindPackageShare('gz_ros2_control_demos'),
-                 'urdf', 'test_tricycle_drive.xacro.urdf']
+                 'urdf', 'test_ackermann_drive.xacro.urdf']
             ),
         ]
     )
@@ -52,7 +52,7 @@ def generate_launch_description():
         executable='create',
         output='screen',
         arguments=['-topic', 'robot_description', '-name',
-                   'tricyle', '-allow_renaming', 'true'],
+                   'ackermann', '-allow_renaming', 'true'],
     )
 
     load_joint_state_broadcaster = ExecuteProcess(
@@ -61,9 +61,9 @@ def generate_launch_description():
         output='screen'
     )
 
-    load_tricycle_controller = ExecuteProcess(
+    load_ackermann_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'tricycle_controller'],
+             'ackermann_steering_controller'],
         output='screen'
     )
 
@@ -93,7 +93,7 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=load_joint_state_broadcaster,
-                on_exit=[load_tricycle_controller],
+                on_exit=[load_ackermann_controller],
             )
         ),
         node_robot_state_publisher,
