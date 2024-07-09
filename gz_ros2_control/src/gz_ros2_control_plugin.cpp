@@ -54,8 +54,7 @@ public:
     rclcpp::Node::SharedPtr & node,
     sim::EntityComponentManager & ecm,
     std::map<std::string, sim::Entity> enabledJoints)
-  : hardware_interface::ResourceManager(
-      node->get_node_clock_interface(), node->get_node_logging_interface()),
+  : hardware_interface::ResourceManager(),
     gz_system_loader_("gz_ros2_control", "gz_ros2_control::GazeboSimSystemInterface"),
     logger_(node->get_logger().get_child("GZResourceManager"))
   {

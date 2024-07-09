@@ -2,25 +2,36 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.0.0 (2024-07-09)
+1.2.5 (2024-07-09)
 ------------------
-* Propagate the node clock and logging interface (`#368 <https://github.com/ros-controls/gz_ros2_control/issues/368>`_)
-* Update docs and cleanup member of `GazeboSimROS2ControlPluginPrivate` (`#363 <https://github.com/ros-controls/gz_ros2_control/issues/363>`_)
-* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
-
-1.3.1 (2024-07-02)
-------------------
-* Simplify access for robot description from CM by overriding RM. (`#265 <https://github.com/ros-controls/gz_ros2_control/issues/265>`_)
+* Simplify access for robot description from CM by overriding RM. (`#265 <https://github.com/ros-controls/gz_ros2_control/issues/265>`_) (`#364 <https://github.com/ros-controls/gz_ros2_control/issues/364>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
   Co-authored-by: Sai Kishor Kothakota <saisastra3@gmail.com>
-* Harden behavior if a joint is not found in the model (`#325 <https://github.com/ros-controls/gz_ros2_control/issues/325>`_)
-  * Don't crash if a joint does not exist
-* Don't crash if a wrong config was detected (`#324 <https://github.com/ros-controls/gz_ros2_control/issues/324>`_)
-* Changed to use spin instead of spin_once to enable multithreading with MultiThreadedExecutor (`#315 <https://github.com/ros-controls/gz_ros2_control/issues/315>`_)
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Contributors: Christoph Fröhlich, Dr. Denis, Takashi Sato
+  (cherry picked from commit ced470bf20d4e9313f76582eda4a28f7fc6a6a11)
+  Co-authored-by: Dr. Denis <denis@stoglrobotics.de>
+* Update docs and cleanup member of `GazeboSimROS2ControlPluginPrivate` (`#363 <https://github.com/ros-controls/gz_ros2_control/issues/363>`_) (`#367 <https://github.com/ros-controls/gz_ros2_control/issues/367>`_)
+  (cherry picked from commit 9257ad3973e2aebf9756c7a8154efb9673ed1a43)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Contributors: mergify[bot]
 
-1.3.0 (2024-05-14)
+1.2.4 (2024-06-02)
+------------------
+* Don't crash if a wrong config was detected (`#324 <https://github.com/ros-controls/gz_ros2_control/issues/324>`_) (`#331 <https://github.com/ros-controls/gz_ros2_control/issues/331>`_)
+  (cherry picked from commit ec1b95893fa933cb3e2cc5341bb65dd621645785)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Harden behavior if a joint is not found in the model (`#325 <https://github.com/ros-controls/gz_ros2_control/issues/325>`_) (`#333 <https://github.com/ros-controls/gz_ros2_control/issues/333>`_)
+  * Don't crash if a joint does not exist
+  (cherry picked from commit 5d2d5eb6c867875c3c8d00a03cd472eac176e67c)
+  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Changed to use spin instead of spin_once to enable multithreading with MultiThreadedExecutor (`#315 <https://github.com/ros-controls/gz_ros2_control/issues/315>`_) (`#319 <https://github.com/ros-controls/gz_ros2_control/issues/319>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+  (cherry picked from commit 45035076408e6014cc911e8d4bc169572a25008c)
+  Co-authored-by: Takashi Sato <t.sato17123@gmail.com>
+* Contributors: mergify[bot]
+
+1.2.3 (2024-05-14)
 ------------------
 * Use Gazebo ROS vendor packages (`#277 <https://github.com/ros-controls/gz_ros2_control/issues/277>`_)
 * fixed target of ament_export_libraries (`#295 <https://github.com/ros-controls/gz_ros2_control/issues/295>`_)
