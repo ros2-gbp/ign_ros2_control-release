@@ -54,7 +54,8 @@ public:
     rclcpp::Node::SharedPtr & node,
     sim::EntityComponentManager & ecm,
     std::map<std::string, sim::Entity> enabledJoints)
-  : hardware_interface::ResourceManager(),
+  : hardware_interface::ResourceManager(
+      node->get_node_clock_interface(), node->get_node_logging_interface()),
     gz_system_loader_("gz_ros2_control", "gz_ros2_control::GazeboSimSystemInterface"),
     logger_(node->get_logger().get_child("GZResourceManager"))
   {
@@ -158,11 +159,6 @@ public:
 
   /// \brief Timing
   rclcpp::Duration control_period_ = rclcpp::Duration(1, 0);
-
-  /// \brief Interface loader
-  std::shared_ptr<pluginlib::ClassLoader<
-      gz_ros2_control::GazeboSimSystemInterface>>
-  robot_hw_sim_loader_{nullptr};
 
   /// \brief Controller manager
   std::shared_ptr<controller_manager::ControllerManager>
