@@ -2,29 +2,21 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.5 (2024-07-09)
+2.0.0 (2024-07-09)
 ------------------
-* fixed robot name (`#358 <https://github.com/ros-controls/gz_ros2_control/issues/358>`_) (`#359 <https://github.com/ros-controls/gz_ros2_control/issues/359>`_)
-  (cherry picked from commit c4b3a550f0a6f6462a0d8acff71d911feff719d9)
-  Co-authored-by: huzaifa <84243533+huzzu7@users.noreply.github.com>
-* Contributors: mergify[bot]
+* fixed robot name (`#358 <https://github.com/ros-controls/gz_ros2_control/issues/358>`_)
+* Contributors: huzaifa
 
-1.2.4 (2024-06-02)
+1.3.1 (2024-07-02)
 ------------------
-* Ackermann steering example (`#349 <https://github.com/ros-controls/gz_ros2_control/issues/349>`_) (`#350 <https://github.com/ros-controls/gz_ros2_control/issues/350>`_)
-  (cherry picked from commit 3139a9065d9bc00413192b27a49e2fb5d4426c7e)
-  Co-authored-by: huzaifa <84243533+huzzu7@users.noreply.github.com>
-* Rename variable in launch file (`#327 <https://github.com/ros-controls/gz_ros2_control/issues/327>`_) (`#339 <https://github.com/ros-controls/gz_ros2_control/issues/339>`_)
+* Ackermann steering example (`#349 <https://github.com/ros-controls/gz_ros2_control/issues/349>`_)
+* Rename variable in launch file (`#327 <https://github.com/ros-controls/gz_ros2_control/issues/327>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-  (cherry picked from commit cd0b002c49e71be459f4e9f0a063b97fed195b28)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* added color definitions (`#310 <https://github.com/ros-controls/gz_ros2_control/issues/310>`_) (`#311 <https://github.com/ros-controls/gz_ros2_control/issues/311>`_)
-  (cherry picked from commit 7cb6fd901f373d6fcfa75ef23e43c6b9d7b186a7)
-  Co-authored-by: Reza Kermani <kermani.areza@gmail.com>
-* Contributors: mergify[bot]
+* added color definitions (`#310 <https://github.com/ros-controls/gz_ros2_control/issues/310>`_)
+* Remove stamped twist parameter (`#308 <https://github.com/ros-controls/gz_ros2_control/issues/308>`_)
+* Contributors: Christoph Fröhlich, Reza Kermani, huzaifa
 
-1.2.3 (2024-05-14)
+1.3.0 (2024-05-14)
 ------------------
 * Update pendulum-example  (`#301 <https://github.com/ros-controls/gz_ros2_control/issues/301>`_)
   * Change initial pose of pendulum
