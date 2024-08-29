@@ -2,55 +2,32 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.7 (2024-08-29)
+2.0.1 (2024-08-26)
 ------------------
-* Parse `position_proportional_gain` parameter from URDF and update docs (`#393 <https://github.com/ros-controls/gz_ros2_control//issues/393>`_) (`#410 <https://github.com/ros-controls/gz_ros2_control//issues/410>`_)
+* Parse `position_proportional_gain` parameter from URDF and update docs (`#393 <https://github.com/ros-controls/gz_ros2_control/issues/393>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-  (cherry picked from commit 8cecc69b7aa698dfd996ae545c186a42b6799d87)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* propagate gazebo remapping and other arguments to the controller node (`#396 <https://github.com/ros-controls/gz_ros2_control//issues/396>`_) (`#397 <https://github.com/ros-controls/gz_ros2_control//issues/397>`_)
-  (cherry picked from commit cbdd3a3fc6dcb49072b501984c3294a20872dcd8)
-  Co-authored-by: Sai Kishor Kothakota <sai.kishor@pal-robotics.com>
-* Contributors: mergify[bot]
+* propagate gazebo remapping and other arguments to the controller node (`#396 <https://github.com/ros-controls/gz_ros2_control/issues/396>`_)
+* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
 
-1.2.6 (2024-07-09)
+2.0.0 (2024-07-09)
 ------------------
-* Propagate the node clock and logging interface (`#368 <https://github.com/ros-controls/gz_ros2_control/issues/368>`_) (`#373 <https://github.com/ros-controls/gz_ros2_control/issues/373>`_)
-  (cherry picked from commit a1d9bd46fc491c0de35f86f9c14c1620cbcdb037)
-  Co-authored-by: Sai Kishor Kothakota <sai.kishor@pal-robotics.com>
-* Contributors: mergify[bot]
+* Propagate the node clock and logging interface (`#368 <https://github.com/ros-controls/gz_ros2_control/issues/368>`_)
+* Update docs and cleanup member of `GazeboSimROS2ControlPluginPrivate` (`#363 <https://github.com/ros-controls/gz_ros2_control/issues/363>`_)
+* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
 
-1.2.5 (2024-07-09)
+1.3.1 (2024-07-02)
 ------------------
-* Simplify access for robot description from CM by overriding RM. (`#265 <https://github.com/ros-controls/gz_ros2_control/issues/265>`_) (`#364 <https://github.com/ros-controls/gz_ros2_control/issues/364>`_)
+* Simplify access for robot description from CM by overriding RM. (`#265 <https://github.com/ros-controls/gz_ros2_control/issues/265>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
   Co-authored-by: Sai Kishor Kothakota <saisastra3@gmail.com>
-  (cherry picked from commit ced470bf20d4e9313f76582eda4a28f7fc6a6a11)
-  Co-authored-by: Dr. Denis <denis@stoglrobotics.de>
-* Update docs and cleanup member of `GazeboSimROS2ControlPluginPrivate` (`#363 <https://github.com/ros-controls/gz_ros2_control/issues/363>`_) (`#367 <https://github.com/ros-controls/gz_ros2_control/issues/367>`_)
-  (cherry picked from commit 9257ad3973e2aebf9756c7a8154efb9673ed1a43)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-* Contributors: mergify[bot]
-
-1.2.4 (2024-06-02)
-------------------
-* Don't crash if a wrong config was detected (`#324 <https://github.com/ros-controls/gz_ros2_control/issues/324>`_) (`#331 <https://github.com/ros-controls/gz_ros2_control/issues/331>`_)
-  (cherry picked from commit ec1b95893fa933cb3e2cc5341bb65dd621645785)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Harden behavior if a joint is not found in the model (`#325 <https://github.com/ros-controls/gz_ros2_control/issues/325>`_) (`#333 <https://github.com/ros-controls/gz_ros2_control/issues/333>`_)
+* Harden behavior if a joint is not found in the model (`#325 <https://github.com/ros-controls/gz_ros2_control/issues/325>`_)
   * Don't crash if a joint does not exist
-  (cherry picked from commit 5d2d5eb6c867875c3c8d00a03cd472eac176e67c)
-  Co-authored-by: Christoph Fröhlich <christophfroehlich@users.noreply.github.com>
+* Don't crash if a wrong config was detected (`#324 <https://github.com/ros-controls/gz_ros2_control/issues/324>`_)
+* Changed to use spin instead of spin_once to enable multithreading with MultiThreadedExecutor (`#315 <https://github.com/ros-controls/gz_ros2_control/issues/315>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-* Changed to use spin instead of spin_once to enable multithreading with MultiThreadedExecutor (`#315 <https://github.com/ros-controls/gz_ros2_control/issues/315>`_) (`#319 <https://github.com/ros-controls/gz_ros2_control/issues/319>`_)
-  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
-  (cherry picked from commit 45035076408e6014cc911e8d4bc169572a25008c)
-  Co-authored-by: Takashi Sato <t.sato17123@gmail.com>
-* Contributors: mergify[bot]
+* Contributors: Christoph Fröhlich, Dr. Denis, Takashi Sato
 
-1.2.3 (2024-05-14)
+1.3.0 (2024-05-14)
 ------------------
 * Use Gazebo ROS vendor packages (`#277 <https://github.com/ros-controls/gz_ros2_control/issues/277>`_)
 * fixed target of ament_export_libraries (`#295 <https://github.com/ros-controls/gz_ros2_control/issues/295>`_)
