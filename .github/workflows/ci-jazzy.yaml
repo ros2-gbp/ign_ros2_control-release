@@ -1,14 +1,14 @@
-name: gz_ros2_control CI - Rolling
+name: gz_ros2_control CI - Jazzy
 
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ rolling ]
+    branches: [ jazzy ]
   push:
-    branches: [ rolling ]
+    branches: [ jazzy ]
   schedule:
     # Run every morning to detect flakiness and broken dependencies
-    - cron: '03 5 * * *'
+    - cron: '03 4 * * *'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       matrix:
         include:
           - docker-image: "ubuntu:24.04"
-            ros-distro: "rolling"
+            ros-distro: "jazzy"
             ros-repo-packages: "-testing"
 
     env:
@@ -28,7 +28,14 @@ jobs:
     container:
       image: ${{ matrix.docker-image }}
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      if: github.event_name != 'schedule'
+      uses: actions/checkout@v4
+    - name: Checkout code for scheduled workflow
+      if: github.event_name == 'schedule'
+      uses: actions/checkout@v4
+      with:
+        ref: jazzy
     - name: Setup colcon workspace
       id: configure
       shell: bash
