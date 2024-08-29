@@ -315,6 +315,11 @@ void GazeboSimROS2ControlPlugin::Configure(
     hold_joints =
       sdfPtr->GetElement("hold_joints")->Get<bool>();
   }
+  double position_proportional_gain = 0.1;  // default
+  if (sdfPtr->HasElement("position_proportional_gain")) {
+    position_proportional_gain =
+      sdfPtr->GetElement("position_proportional_gain")->Get<double>();
+  }
 
   if (sdfPtr->HasElement("ros")) {
     sdf::ElementPtr sdfRos = sdfPtr->GetElement("ros");
@@ -400,17 +405,45 @@ void GazeboSimROS2ControlPlugin::Configure(
       e.what());
   }
 
+  try {
+    this->dataPtr->node_->declare_parameter(
+      "position_proportional_gain",
+      rclcpp::ParameterValue(position_proportional_gain));
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
+    RCLCPP_ERROR(
+      this->dataPtr->node_->get_logger(),
+      "Parameter 'position_proportional_gain' has already been declared, %s",
+      e.what());
+  } catch (const rclcpp::exceptions::InvalidParametersException & e) {
+    RCLCPP_ERROR(
+      this->dataPtr->node_->get_logger(),
+      "Parameter 'position_proportional_gain' has invalid name, %s",
+      e.what());
+  } catch (const rclcpp::exceptions::InvalidParameterValueException & e) {
+    RCLCPP_ERROR(
+      this->dataPtr->node_->get_logger(),
+      "Parameter 'position_proportional_gain' value is invalid, %s",
+      e.what());
+  } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+    RCLCPP_ERROR(
+      this->dataPtr->node_->get_logger(),
+      "Parameter 'position_proportional_gain' value has wrong type, %s",
+      e.what());
+  }
+
   std::unique_ptr<hardware_interface::ResourceManager> resource_manager_ =
     std::make_unique<gz_ros2_control::GZResourceManager>(this->dataPtr->node_, _ecm, enabledJoints);
 
   // Create the controller manager
   RCLCPP_INFO(this->dataPtr->node_->get_logger(), "Loading controller_manager");
+  rclcpp::NodeOptions options = controller_manager::get_cm_node_options();
+  options.arguments(arguments);
   this->dataPtr->controller_manager_.reset(
     new controller_manager::ControllerManager(
       std::move(resource_manager_),
       this->dataPtr->executor_,
       controllerManagerNodeName,
-      this->dataPtr->node_->get_namespace()));
+      this->dataPtr->node_->get_namespace(), options));
   this->dataPtr->executor_->add_node(this->dataPtr->controller_manager_);
 
   this->dataPtr->update_rate = this->dataPtr->controller_manager_->get_update_rate();
