@@ -2,6 +2,26 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.2 (2024-10-28)
+------------------
+* use gz-physics`#283 <https://github.com/ros-controls/gz_ros2_control/issues/283>`_ to implement joint_states/effort feedback (`#186 <https://github.com/ros-controls/gz_ros2_control/issues/186>`_) (`#430 <https://github.com/ros-controls/gz_ros2_control/issues/430>`_)
+  (cherry picked from commit cc66e7342c6954bd5c3950e12a45567e2ca1652c)
+  Co-authored-by: Andreas Bihlmaier <andreas.bihlmaier@gmx.de>
+* Contributors: mergify[bot]
+
+2.0.1 (2024-08-26)
+------------------
+* Parse `position_proportional_gain` parameter from URDF and update docs (`#393 <https://github.com/ros-controls/gz_ros2_control/issues/393>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* propagate gazebo remapping and other arguments to the controller node (`#396 <https://github.com/ros-controls/gz_ros2_control/issues/396>`_)
+* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
+
+2.0.0 (2024-07-09)
+------------------
+* Propagate the node clock and logging interface (`#368 <https://github.com/ros-controls/gz_ros2_control/issues/368>`_)
+* Update docs and cleanup member of `GazeboSimROS2ControlPluginPrivate` (`#363 <https://github.com/ros-controls/gz_ros2_control/issues/363>`_)
+* Contributors: Christoph Fröhlich, Sai Kishor Kothakota
+
 1.3.1 (2024-07-02)
 ------------------
 * Simplify access for robot description from CM by overriding RM. (`#265 <https://github.com/ros-controls/gz_ros2_control/issues/265>`_)
