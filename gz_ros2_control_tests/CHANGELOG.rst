@@ -2,7 +2,10 @@
 Changelog for package gz_ros2_control_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.7 (2024-08-29)
+Forthcoming
+-----------
+
+1.2.8 (2024-10-28)
 ------------------
 * Use spawner with `--params-file` argument instead of cli verbs (`#399 <https://github.com/ros-controls/gz_ros2_control//issues/399>`_) (`#409 <https://github.com/ros-controls/gz_ros2_control//issues/409>`_)
   Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
