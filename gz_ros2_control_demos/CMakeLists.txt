@@ -25,7 +25,6 @@ find_package(geometry_msgs REQUIRED)
 install(DIRECTORY
   launch
   config
-  sdf
   urdf
   DESTINATION share/${PROJECT_NAME}/
 )
