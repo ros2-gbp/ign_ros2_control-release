@@ -1,4 +1,4 @@
-// Copyright 2022 Open Source Robotics Foundation, Inc.
+// Copyright 2024 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <memory>
 
 #include <rclcpp/rclcpp.hpp>
@@ -25,22 +26,25 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   std::shared_ptr<rclcpp::Node> node =
-    std::make_shared<rclcpp::Node>("diff_drive_test_node");
+    std::make_shared<rclcpp::Node>("ackermann_drive_test_node");
 
   auto publisher = node->create_publisher<geometry_msgs::msg::TwistStamped>(
-    "/diff_drive_base_controller/cmd_vel", 10);
+    "/ackermann_steering_controller/reference", 10);
 
   RCLCPP_INFO(node->get_logger(), "node created");
 
+  geometry_msgs::msg::Twist tw;
+
+  tw.linear.x = 0.5;
+  tw.linear.y = 0.0;
+  tw.linear.z = 0.0;
+
+  tw.angular.x = 0.0;
+  tw.angular.y = 0.0;
+  tw.angular.z = 0.3;
+
   geometry_msgs::msg::TwistStamped command;
-
-  command.twist.linear.x = 0.1;
-  command.twist.linear.y = 0.0;
-  command.twist.linear.z = 0.0;
-
-  command.twist.angular.x = 0.0;
-  command.twist.angular.y = 0.0;
-  command.twist.angular.z = 0.1;
+  command.twist = tw;
 
   while (1) {
     command.header.stamp = node->now();

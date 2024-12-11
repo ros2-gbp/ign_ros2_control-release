@@ -25,6 +25,7 @@ find_package(geometry_msgs REQUIRED)
 install(DIRECTORY
   launch
   config
+  sdf
   urdf
   DESTINATION share/${PROJECT_NAME}/
 )
@@ -60,6 +61,12 @@ ament_target_dependencies(example_tricycle_drive
   geometry_msgs
 )
 
+add_executable(example_ackermann_drive examples/example_ackermann_drive.cpp)
+ament_target_dependencies(example_ackermann_drive
+  rclcpp
+  geometry_msgs
+)
+
 add_executable(example_gripper examples/example_gripper.cpp)
 ament_target_dependencies(example_gripper
   rclcpp
@@ -81,6 +88,7 @@ install(
     example_effort
     example_diff_drive
     example_tricycle_drive
+    example_ackermann_drive
     example_gripper
   DESTINATION
     lib/${PROJECT_NAME}
