@@ -2,6 +2,16 @@
 Changelog for package gz_ros2_control_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.5 (2025-01-30)
+------------------
+* Use files from demos for testing (`#485 <https://github.com/ros-controls/gz_ros2_control/issues/485>`_)
+* Fix the test criterion (`#481 <https://github.com/ros-controls/gz_ros2_control/issues/481>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Contributors: Christoph Fröhlich
+
+2.0.4 (2025-01-15)
+------------------
+
 2.0.3 (2024-12-11)
 ------------------
 * Add missing bridge for simulation time (`#443 <https://github.com/ros-controls/gz_ros2_control/issues/443>`_)
