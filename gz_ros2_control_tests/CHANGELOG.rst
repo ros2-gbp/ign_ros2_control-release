@@ -2,6 +2,13 @@
 Changelog for package gz_ros2_control_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.6 (2025-02-19)
+------------------
+* Change the order of tests to fix timing issues (`#498 <https://github.com/ros-controls/gz_ros2_control/issues/498>`_)
+* Update cart demos to use joint_trajectory_controller (`#486 <https://github.com/ros-controls/gz_ros2_control/issues/486>`_)
+  Co-authored-by: Alejandro Hernández Cordero <ahcorde@gmail.com>
+* Contributors: Christoph Fröhlich
+
 2.0.5 (2025-01-30)
 ------------------
 * Use files from demos for testing (`#485 <https://github.com/ros-controls/gz_ros2_control/issues/485>`_)
