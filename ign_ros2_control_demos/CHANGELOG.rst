@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.13 (2025-04-04)
+-------------------
+* Add shim to deprecated ign_ros2_control_demos package (`#524 <https://github.com/ros-controls/gz_ros2_control/issues/524>`_)
+* Contributors: Christoph Fröhlich
+
 0.7.12 (2025-02-20)
 -------------------
 
