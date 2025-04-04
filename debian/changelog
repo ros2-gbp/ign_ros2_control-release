@@ -1,0 +1,8 @@
+ros-humble-ign-ros2-control (0.7.13-1jammy) jammy; urgency=high
+
+  * Rename ign to gz (backport #67 <https://github.com/ros-controls/gz_ros2_control/issues/67>) (#515 <https://github.com/ros-controls/gz_ros2_control/issues/515>)
+  * Contributors: Christoph Fröhlich
+
+ -- Alejandro Hernández <alejandro@openrobotics.com>  Thu, 03 Apr 2025 22:00:00 -0000
+
+
