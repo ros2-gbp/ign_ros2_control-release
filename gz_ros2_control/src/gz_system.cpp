@@ -496,23 +496,6 @@ GazeboSimSystem::on_init(const hardware_interface::HardwareInfo & info)
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
     return CallbackReturn::ERROR;
   }
-  if (info.hardware_plugin_name.compare("gz_ros2_control/GazeboSimSystem") != 0) {
-    RCLCPP_WARN(
-      this->nh_->get_logger(),
-      "The ign_ros2_control plugin got renamed to gz_ros2_control.\n"
-      "Update the <ros2_control> tag and gazebo plugin to\n"
-      "<hardware>\n"
-      "  <plugin>gz_ros2_control/GazeboSimSystem</plugin>\n"
-      "</hardware>\n"
-      "<gazebo>\n"
-      "  <plugin filename=\"gz_ros2_control-system\""
-      "name=\"gz_ros2_control::GazeboSimROS2ControlPlugin\">\n"
-      "    ...\n"
-      "  </plugin>\n"
-      "</gazebo>"
-    );
-  }
-
   return CallbackReturn::SUCCESS;
 }
 
@@ -666,19 +649,9 @@ hardware_interface::return_type GazeboSimSystem::write(
     }
 
     if (this->dataPtr->joints_[i].joint_control_method & VELOCITY) {
-      if (!this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-          this->dataPtr->joints_[i].sim_joint))
-      {
-        this->dataPtr->ecm->CreateComponent(
-          this->dataPtr->joints_[i].sim_joint,
-          sim::components::JointVelocityCmd({0}));
-      } else {
-        const auto jointVelCmd =
-          this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-          this->dataPtr->joints_[i].sim_joint);
-        *jointVelCmd = sim::components::JointVelocityCmd(
-          {this->dataPtr->joints_[i].joint_velocity_cmd});
-      }
+      this->dataPtr->ecm->SetComponentData<sim::components::JointVelocityCmd>(
+        this->dataPtr->joints_[i].sim_joint,
+        {this->dataPtr->joints_[i].joint_velocity_cmd});
     } else if (this->dataPtr->joints_[i].joint_control_method & POSITION) {
       // Get error in position
       double error;
@@ -768,6 +741,3 @@ hardware_interface::return_type GazeboSimSystem::write(
 #include "pluginlib/class_list_macros.hpp"  // NOLINT
 PLUGINLIB_EXPORT_CLASS(
   gz_ros2_control::GazeboSimSystem, gz_ros2_control::GazeboSimSystemInterface)
-// for backward compatibility with Ignition Gazebo
-PLUGINLIB_EXPORT_CLASS(
-  ign_ros2_control::IgnitionSystem, gz_ros2_control::GazeboSimSystemInterface)
