@@ -2,6 +2,9 @@
 Changelog for package gz_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.14 (2025-04-21)
+-------------------
+
 0.7.13 (2025-04-04)
 -------------------
 * Remove gtest dependency (`#543 <https://github.com/ros-controls/gz_ros2_control/issues/543>`_) (`#545 <https://github.com/ros-controls/gz_ros2_control/issues/545>`_)
