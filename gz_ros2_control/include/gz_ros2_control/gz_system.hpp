@@ -77,7 +77,7 @@ public:
     std::map<std::string, sim::Entity> & joints,
     const hardware_interface::HardwareInfo & hardware_info,
     sim::EntityComponentManager & _ecm,
-    int & update_rate) override;
+    unsigned int update_rate) override;
 
 private:
   // Register a sensor (for now just IMUs)
@@ -91,11 +91,5 @@ private:
 };
 
 }  // namespace gz_ros2_control
-
-// for backward compatibility
-namespace ign_ros2_control
-{
-using IgnitionSystem = gz_ros2_control::GazeboSimSystem;
-}  // namespace ign_ros2_control
 
 #endif  // GZ_ROS2_CONTROL__GZ_SYSTEM_HPP_
