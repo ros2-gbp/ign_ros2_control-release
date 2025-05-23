@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.8 (2025-05-23)
+------------------
+* [kilted] Update deprecated call to ament_target_dependencies (`#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_)
+* Contributors: David V. Lu!!
+
 2.0.7 (2025-04-04)
 ------------------
 * Set `use_sim_time` through CM NodeOptions (`#533 <https://github.com/ros-controls/gz_ros2_control/issues/533>`_)
