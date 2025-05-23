@@ -1,3 +1,33 @@
+## gz_ros2_control (rolling) - 2.0.8-1
+
+The packages in the `gz_ros2_control` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --rosdistro rolling --track rolling gz_ros2_control` on `Fri, 23 May 2025 10:34:32 -0000`
+
+These packages were released:
+- `gz_ros2_control`
+- `gz_ros2_control_demos`
+
+These packages were explicitly ignored:
+- `gz_ros2_control_tests`
+- `ign_ros2_control`
+- `ign_ros2_control_demos`
+
+Version of package(s) in repository `gz_ros2_control`:
+
+- upstream repository: https://github.com/ros-controls/gz_ros2_control
+- release repository: https://github.com/ros2-gbp/ign_ros2_control-release.git
+- rosdistro version: `2.0.7-1`
+- old version: `2.0.7-1`
+- new version: `2.0.8-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.25.1`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## ign_ros2_control (humble) - 0.7.14-1
 
 The packages in the `ign_ros2_control` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble --track humble ign_ros2_control` on `Mon, 21 Apr 2025 11:16:52 -0000`
