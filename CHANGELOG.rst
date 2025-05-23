@@ -2,6 +2,9 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.13 (2025-05-23)
+-------------------
+
 1.2.12 (2025-04-04)
 -------------------
 * Set `use_sim_time` through CM NodeOptions (`#533 <https://github.com/ros-controls/gz_ros2_control/issues/533>`_) (`#538 <https://github.com/ros-controls/gz_ros2_control/issues/538>`_)
