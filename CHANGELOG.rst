@@ -2,6 +2,12 @@
 Changelog for package gz_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.15 (2025-05-23)
+-------------------
+* Fix ackermann demo (backport `#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_) (`#585 <https://github.com/ros-controls/gz_ros2_control/issues/585>`_)
+* Fix quotes in launch files (`#558 <https://github.com/ros-controls/gz_ros2_control/issues/558>`_)
+* Contributors: Christoph Fröhlich, mergify[bot]
+
 0.7.14 (2025-04-21)
 -------------------
 
