@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.15 (2025-05-23)
+-------------------
+* Fix quotes in legacy launch files (`#565 <https://github.com/ros-controls/gz_ros2_control/issues/565>`_)
+* Contributors: Christoph Fröhlich
+
 0.7.14 (2025-04-21)
 -------------------
 * Added missing test dependency (`#555 <https://github.com/ros-controls/gz_ros2_control/issues/555>`_)
