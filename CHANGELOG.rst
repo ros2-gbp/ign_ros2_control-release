@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2025-05-26)
+------------------
+* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_)
+* Contributors: Christoph Fröhlich
+
 2.0.8 (2025-05-23)
 ------------------
 * [kilted] Update deprecated call to ament_target_dependencies (`#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_)
