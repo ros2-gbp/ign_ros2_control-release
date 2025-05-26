@@ -2,6 +2,15 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.9 (2025-05-26)
+------------------
+* Fix ackermann demo (backport `#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_) (`#583 <https://github.com/ros-controls/gz_ros2_control/issues/583>`_)
+* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_) (`#592 <https://github.com/ros-controls/gz_ros2_control/issues/592>`_)
+* [kilted] Update deprecated call to ament_target_dependencies (backport `#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_) (`#576 <https://github.com/ros-controls/gz_ros2_control/issues/576>`_)
+* Update parameters for steering_controllers_library (`#566 <http
+* Use  `--controller-ros-args` to use parser append action in controller spawner (`#546 <https://github.com/ros-controls/gz_ros2_control/issues/546>`_)
+* Contributors: louietouie, mergify[bot]
+
 2.0.7 (2025-04-04)
 ------------------
 * Remove gtest dependency (`#543 <https://github.com/ros-controls/gz_ros2_control/issues/543>`_)
