@@ -1,15 +1,9 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(gz_ros2_control_demos)
 
-# Default to C11
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 11)
-endif()
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
+find_package(ros2_control_cmake REQUIRED)
+set_compiler_options()
+export_windows_symbols()
 
 if(NOT WIN32)
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -31,50 +25,38 @@ install(DIRECTORY
 )
 
 add_executable(example_position examples/example_position.cpp)
-ament_target_dependencies(example_position
-  rclcpp
-  rclcpp_action
-  control_msgs
+target_link_libraries(example_position PUBLIC
+  ${control_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
 )
 
 # use the same example_position.cpp for example_velocity
 add_executable(example_velocity examples/example_position.cpp)
-ament_target_dependencies(example_velocity
-  rclcpp
-  rclcpp_action
-  control_msgs
+target_link_libraries(example_velocity PUBLIC
+  ${control_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
 )
 
 # use the same example_position.cpp for example_effort
 add_executable(example_effort examples/example_position.cpp)
-ament_target_dependencies(example_effort
-  rclcpp
-  rclcpp_action
-  control_msgs
+target_link_libraries(example_effort PUBLIC
+  ${control_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
 )
 
-add_executable(example_diff_drive examples/example_diff_drive.cpp)
-ament_target_dependencies(example_diff_drive
-  rclcpp
-  geometry_msgs
-)
-
-add_executable(example_tricycle_drive examples/example_tricycle_drive.cpp)
-ament_target_dependencies(example_tricycle_drive
-  rclcpp
-  geometry_msgs
-)
-
-add_executable(example_ackermann_drive examples/example_ackermann_drive.cpp)
-ament_target_dependencies(example_ackermann_drive
-  rclcpp
-  geometry_msgs
+add_executable(example_mobile_robots examples/example_mobile_robots.cpp)
+target_link_libraries(example_mobile_robots
+  rclcpp::rclcpp
+  ${geometry_msgs_TARGETS}
 )
 
 add_executable(example_gripper examples/example_gripper.cpp)
-ament_target_dependencies(example_gripper
-  rclcpp
-  std_msgs
+target_link_libraries(example_gripper PUBLIC
+  ${std_msgs_TARGETS}
+  rclcpp::rclcpp
 )
 
 if(BUILD_TESTING)
@@ -89,9 +71,7 @@ install(
     example_position
     example_velocity
     example_effort
-    example_diff_drive
-    example_tricycle_drive
-    example_ackermann_drive
+    example_mobile_robots
     example_gripper
   DESTINATION
     lib/${PROJECT_NAME}
