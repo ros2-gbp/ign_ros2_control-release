@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2025-07-02)
+------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (`#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_)
+* Contributors: Bartłomiej Krajewski
+
 3.0.0 (2025-05-26)
 ------------------
 * Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_)
