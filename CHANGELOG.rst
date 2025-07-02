@@ -2,6 +2,13 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2025-07-02)
+------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (`#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_)
+* Shift to Struct based Method and Constructors, with Executor passed from CM to on_init() (`#613 <https://github.com/ros-controls/gz_ros2_control/issues/613>`_)
+* Bump CMake minimum version (`#601 <https://github.com/ros-controls/gz_ros2_control/issues/601>`_)
+* Contributors: Bartłomiej Krajewski, Christoph Fröhlich, Soham Patil
+
 3.0.0 (2025-05-26)
 ------------------
 * Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_)
