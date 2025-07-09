@@ -2,6 +2,11 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.10 (2025-07-09)
+-------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (backport `#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_) (`#623 <https://github.com/ros-controls/gz_ros2_control/issues/623>`_)
+* Contributors: mergify[bot]
+
 2.0.9 (2025-05-26)
 ------------------
 * Fix ackermann demo (backport `#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_) (`#583 <https://github.com/ros-controls/gz_ros2_control/issues/583>`_)
