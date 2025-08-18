@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>gz_ros2_control_demos</name>
-  <version>0.7.16</version>
+  <version>1.2.15</version>
   <description>gz_ros2_control_demos</description>
 
   <maintainer email="ahcorde@osrfoundation.org">Alejandro Hernandez</maintainer>
 
   <license>Apache License 2.0</license>
-
 
   <url type="website">https://github.com/ros-controls/gz_ros2_control/blob/master/README.md</url>
   <url type="bugtracker">https://github.com/ros-controls/gz_ros2_control/issues</url>
@@ -36,6 +35,7 @@
   <exec_depend>xacro</exec_depend>
 
   <!-- ros2_control -->
+  <depend>ros2_control_cmake</depend>
   <exec_depend>ackermann_steering_controller</exec_depend>
   <exec_depend>control_msgs</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>
@@ -48,7 +48,7 @@
   <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>mecanum_drive_controller</exec_depend>
   <exec_depend>ros2controlcli</exec_depend>
-  <exec_depend>tricycle_controller</exec_depend>
+  <exec_depend>tricycle_steering_controller</exec_depend>
   <exec_depend>velocity_controllers</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
