@@ -106,9 +106,9 @@
       </sensor>
   </gazebo>
 
-  <gazebo>
+ <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <parameters>$(find gz_ros2_control_demos)/config/cart_controller_ft_sensor.yaml</parameters>
+      <parameters>$(find gz_ros2_control_demos)/config/cart_controller_position.yaml</parameters>
     </plugin>
   </gazebo>
 </robot>
