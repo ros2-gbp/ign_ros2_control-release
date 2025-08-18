@@ -14,6 +14,8 @@
 
 #include "gz_ros2_control/gz_system.hpp"
 
+#include <array>
+#include <cstddef>
 #include <limits>
 #include <map>
 #include <memory>
@@ -23,15 +25,20 @@
 
 #ifdef GZ_HEADERS
 #include <gz/msgs/imu.pb.h>
+#include <gz/msgs/wrench.pb.h>
 
+#include <gz/physics/Geometry.hh>
 #include <gz/sim/components/AngularVelocity.hh>
 #include <gz/sim/components/Imu.hh>
-#include <gz/sim/components/JointForce.hh>
+#include <gz/sim/components/ForceTorque.hh>
+#include <gz/sim/components/JointAxis.hh>
 #include <gz/sim/components/JointForceCmd.hh>
 #include <gz/sim/components/JointPosition.hh>
 #include <gz/sim/components/JointPositionReset.hh>
-#include <gz/sim/components/JointVelocity.hh>
+#include <gz/sim/components/JointTransmittedWrench.hh>
+#include <gz/sim/components/JointType.hh>
 #include <gz/sim/components/JointVelocityCmd.hh>
+#include <gz/sim/components/JointVelocity.hh>
 #include <gz/sim/components/JointVelocityReset.hh>
 #include <gz/sim/components/LinearAcceleration.hh>
 #include <gz/sim/components/Name.hh>
@@ -41,17 +48,24 @@
 #include <gz/transport/Node.hh>
 #define GZ_TRANSPORT_NAMESPACE gz::transport::
 #define GZ_MSGS_NAMESPACE gz::msgs::
+#define GZ_PHYSICS_NAMESPACE gz::physics::
+#define GZ_VECTOR_DOT dot
 #else
 #include <ignition/msgs/imu.pb.h>
+#include <ignition/msgs/wrench.pb.h>
 
+#include <ignition/math/Vector3.hh>
 #include <ignition/gazebo/components/AngularVelocity.hh>
 #include <ignition/gazebo/components/Imu.hh>
-#include <ignition/gazebo/components/JointForce.hh>
+#include <ignition/gazebo/components/ForceTorque.hh>
+#include <ignition/gazebo/components/JointAxis.hh>
 #include <ignition/gazebo/components/JointForceCmd.hh>
 #include <ignition/gazebo/components/JointPosition.hh>
 #include <ignition/gazebo/components/JointPositionReset.hh>
-#include <ignition/gazebo/components/JointVelocity.hh>
+#include <ignition/gazebo/components/JointTransmittedWrench.hh>
+#include <ignition/gazebo/components/JointType.hh>
 #include <ignition/gazebo/components/JointVelocityCmd.hh>
+#include <ignition/gazebo/components/JointVelocity.hh>
 #include <ignition/gazebo/components/JointVelocityReset.hh>
 #include <ignition/gazebo/components/LinearAcceleration.hh>
 #include <ignition/gazebo/components/Name.hh>
@@ -61,6 +75,8 @@
 #include <ignition/transport/Node.hh>
 #define GZ_TRANSPORT_NAMESPACE ignition::transport::
 #define GZ_MSGS_NAMESPACE ignition::msgs::
+#define GZ_PHYSICS_NAMESPACE ignition::math::
+#define GZ_VECTOR_DOT Dot
 #endif
 
 #include <hardware_interface/hardware_info.hpp>
@@ -69,6 +85,12 @@ struct jointData
 {
   /// \brief Joint's names.
   std::string name;
+
+  /// \brief Joint's type.
+  sdf::JointType joint_type;
+
+  /// \brief Joint's axis.
+  sdf::JointAxis joint_axis;
 
   /// \brief Current joint position
   double joint_position;
@@ -105,6 +127,35 @@ struct MimicJoint
   double multiplier = 1.0;
   std::vector<std::string> interfaces_to_mimic;
 };
+
+class ForceTorqueData
+{
+public:
+  /// \brief force torque sensor's name.
+  std::string name{};
+
+  /// \brief force torque sensor's topic name.
+  std::string topicName{};
+
+  /// \brief handles to the force torque from within Gazebo
+  sim::Entity sim_ft_sensors_ = sim::kNullEntity;
+
+  /// \brief An array per FT
+  std::array<double, 6> ft_sensor_data_;
+
+  /// \brief callback to get the Force Torque topic values
+  void OnForceTorque(const GZ_MSGS_NAMESPACE Wrench & _msg);
+};
+
+void ForceTorqueData::OnForceTorque(const GZ_MSGS_NAMESPACE Wrench & _msg)
+{
+  this->ft_sensor_data_[0] = _msg.force().x();
+  this->ft_sensor_data_[1] = _msg.force().y();
+  this->ft_sensor_data_[2] = _msg.force().z();
+  this->ft_sensor_data_[3] = _msg.torque().x();
+  this->ft_sensor_data_[4] = _msg.torque().y();
+  this->ft_sensor_data_[5] = _msg.torque().z();
+}
 
 class ImuData
 {
@@ -154,8 +205,11 @@ public:
   /// \brief vector with the joint's names.
   std::vector<struct jointData> joints_;
 
-  /// \brief vector with the imus .
+  /// \brief vector with the imus.
   std::vector<std::shared_ptr<ImuData>> imus_;
+
+  /// \brief vector with the force torque sensors.
+  std::vector<std::shared_ptr<ForceTorqueData>> ft_sensors_;
 
   /// \brief state interfaces that will be exported to the Resource Manager
   std::vector<hardware_interface::StateInterface> state_interfaces_;
@@ -236,6 +290,10 @@ bool GazeboSimSystem::initSim(
 
     sim::Entity simjoint = enableJoints[joint_name];
     this->dataPtr->joints_[j].sim_joint = simjoint;
+    this->dataPtr->joints_[j].joint_type = _ecm.Component<sim::components::JointType>(
+      simjoint)->Data();
+    this->dataPtr->joints_[j].joint_axis = _ecm.Component<sim::components::JointAxis>(
+      simjoint)->Data();
 
     // Create joint position component if one doesn't exist
     if (!_ecm.EntityHasComponentType(
@@ -253,12 +311,12 @@ bool GazeboSimSystem::initSim(
       _ecm.CreateComponent(simjoint, sim::components::JointVelocity());
     }
 
-    // Create joint force component if one doesn't exist
+    // Create joint transmitted wrench component if one doesn't exist
     if (!_ecm.EntityHasComponentType(
         simjoint,
-        sim::components::JointForce().TypeId()))
+        sim::components::JointTransmittedWrench().TypeId()))
     {
-      _ecm.CreateComponent(simjoint, sim::components::JointForce());
+      _ecm.CreateComponent(simjoint, sim::components::JointTransmittedWrench());
     }
 
     // Accept this joint and continue configuration
@@ -501,6 +559,55 @@ void GazeboSimSystem::registerSensors(
       this->dataPtr->imus_.push_back(imuData);
       return true;
     });
+
+  this->dataPtr->ecm->Each<sim::components::ForceTorque,
+    sim::components::Name>(
+    [&](const sim::Entity & _entity,
+    const sim::components::ForceTorque *,
+    const sim::components::Name * _name) -> bool
+    {
+      auto ftData = std::make_shared<ForceTorqueData>();
+      RCLCPP_INFO_STREAM(this->nh_->get_logger(), "Loading sensor: " << _name->Data());
+
+      auto sensorTopicComp = this->dataPtr->ecm->Component<
+        sim::components::SensorTopic>(_entity);
+      if (sensorTopicComp) {
+        RCLCPP_INFO_STREAM(this->nh_->get_logger(), "Topic name: " << sensorTopicComp->Data());
+      }
+
+      RCLCPP_INFO_STREAM(
+        this->nh_->get_logger(), "\tState:");
+      ftData->name = _name->Data();
+      ftData->sim_ft_sensors_ = _entity;
+
+      hardware_interface::ComponentInfo component;
+      for (auto & comp : sensor_components_) {
+        if (comp.name == _name->Data()) {
+          component = comp;
+        }
+      }
+
+      static const std::map<std::string, size_t> interface_name_map = {
+        {"force.x", 0},
+        {"force.y", 1},
+        {"force.z", 2},
+        {"torque.x", 3},
+        {"torque.y", 4},
+        {"torque.z", 5},
+      };
+
+      for (const auto & state_interface : component.state_interfaces) {
+        RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t " << state_interface.name);
+
+        size_t data_index = interface_name_map.at(state_interface.name);
+        this->dataPtr->state_interfaces_.emplace_back(
+          ftData->name,
+          state_interface.name,
+          &ftData->ft_sensor_data_[data_index]);
+      }
+      this->dataPtr->ft_sensors_.push_back(ftData);
+      return true;
+    });
 }
 
 CallbackReturn
@@ -576,11 +683,10 @@ hardware_interface::return_type GazeboSimSystem::read(
       this->dataPtr->ecm->Component<sim::components::JointVelocity>(
       this->dataPtr->joints_[i].sim_joint);
 
-    // TODO(ahcorde): Revisit this part ignitionrobotics/ign-physics#124
-    // Get the joint force
-    // const auto * jointForce =
-    //   _ecm.Component<sim::components::JointForce>(
-    //   this->dataPtr->sim_joints_[j]);
+    // Get the joint force via joint transmitted wrench
+    const auto * jointWrench =
+      this->dataPtr->ecm->Component<sim::components::JointTransmittedWrench>(
+      this->dataPtr->joints_[i].sim_joint);
 
     // Get the joint position
     const auto * jointPositions =
@@ -589,7 +695,19 @@ hardware_interface::return_type GazeboSimSystem::read(
 
     this->dataPtr->joints_[i].joint_position = jointPositions->Data()[0];
     this->dataPtr->joints_[i].joint_velocity = jointVelocity->Data()[0];
-    // this->dataPtr->joint_effort_[j] = jointForce->Data()[0];
+    GZ_PHYSICS_NAMESPACE Vector3d force_or_torque;
+    if (this->dataPtr->joints_[i].joint_type == sdf::JointType::PRISMATIC) {
+      force_or_torque = {jointWrench->Data().force().x(),
+        jointWrench->Data().force().y(), jointWrench->Data().force().z()};
+    } else {  // REVOLUTE and CONTINUOUS
+      force_or_torque = {jointWrench->Data().torque().x(),
+        jointWrench->Data().torque().y(), jointWrench->Data().torque().z()};
+    }
+    // Calculate the scalar effort along the joint axis
+    this->dataPtr->joints_[i].joint_effort = force_or_torque.GZ_VECTOR_DOT(
+      GZ_PHYSICS_NAMESPACE Vector3d{this->dataPtr->joints_[i].joint_axis.Xyz()[0],
+        this->dataPtr->joints_[i].joint_axis.Xyz()[1],
+        this->dataPtr->joints_[i].joint_axis.Xyz()[2]});
   }
 
   for (unsigned int i = 0; i < this->dataPtr->imus_.size(); ++i) {
@@ -608,6 +726,24 @@ hardware_interface::return_type GazeboSimSystem::read(
       }
     }
   }
+
+  for (unsigned int i = 0; i < this->dataPtr->ft_sensors_.size(); ++i) {
+    if (this->dataPtr->ft_sensors_[i]->topicName.empty()) {
+      auto sensorTopicComp = this->dataPtr->ecm->Component<
+        sim::components::SensorTopic>(this->dataPtr->ft_sensors_[i]->sim_ft_sensors_);
+      if (sensorTopicComp) {
+        this->dataPtr->ft_sensors_[i]->topicName = sensorTopicComp->Data();
+        RCLCPP_INFO_STREAM(
+          this->nh_->get_logger(), "ForceTorque " << this->dataPtr->ft_sensors_[i]->name <<
+            " has a topic name: " << sensorTopicComp->Data());
+
+        this->dataPtr->node.Subscribe(
+          this->dataPtr->ft_sensors_[i]->topicName, &ForceTorqueData::OnForceTorque,
+          this->dataPtr->ft_sensors_[i].get());
+      }
+    }
+  }
+
   return hardware_interface::return_type::OK;
 }
 
