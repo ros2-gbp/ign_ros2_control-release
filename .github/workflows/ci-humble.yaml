@@ -8,7 +8,7 @@ on:
     branches: [ humble ]
   schedule:
     # Run every morning to detect flakiness and broken dependencies
-    - cron: '33 5 * * *'
+    - cron: '33 5 * * MON-FRI'
 
 jobs:
   build:
@@ -19,12 +19,22 @@ jobs:
         include:
           - gz-version: fortress
             ros-repo-packages: ""
+            upstream-repos: ""
           - gz-version: fortress
             ros-repo-packages: "-testing"
+            upstream-repos: ""
           - gz-version: harmonic
             ros-repo-packages: ""
+            upstream-repos: ""
           - gz-version: harmonic
             ros-repo-packages: "-testing"
+            upstream-repos: ""
+          - gz-version: fortress
+            ros-repo-packages: "-testing"
+            upstream-repos: "gz_ros2_control.humble.repos"
+          - gz-version: harmonic
+            ros-repo-packages: "-testing"
+            upstream-repos: "gz_ros2_control.humble.repos"
     env:
       GZ_VERSION: ${{ matrix.gz-version }}
     container:
@@ -32,12 +42,15 @@ jobs:
     steps:
     - name: Checkout code
       if: github.event_name != 'schedule'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Checkout code for scheduled workflow
       if: github.event_name == 'schedule'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: humble
+    - name: Checkout ros2_control framework for semi-binary builds
+      if: ${{ matrix.upstream-repos != '' }}
+      run: vcs import --input ${{ matrix.upstream-repos }}
     - name: Setup colcon workspace
       id: configure
       shell: bash
