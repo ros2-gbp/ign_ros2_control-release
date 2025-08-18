@@ -1,3 +1,33 @@
+## gz_ros2_control (rolling) - 3.0.3-1
+
+The packages in the `gz_ros2_control` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --rosdistro rolling --track rolling gz_ros2_control` on `Mon, 18 Aug 2025 18:23:00 -0000`
+
+These packages were released:
+- `gz_ros2_control`
+- `gz_ros2_control_demos`
+
+These packages were explicitly ignored:
+- `gz_ros2_control_tests`
+- `ign_ros2_control`
+- `ign_ros2_control_demos`
+
+Version of package(s) in repository `gz_ros2_control`:
+
+- upstream repository: https://github.com/ros-controls/gz_ros2_control
+- release repository: https://github.com/ros2-gbp/ign_ros2_control-release.git
+- rosdistro version: `3.0.2-1`
+- old version: `3.0.2-1`
+- new version: `3.0.3-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.25.1`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## gz_ros2_control (kilted) - 2.0.11-2
 
 The packages in the `gz_ros2_control` repository were released into the `kilted` distro by running `/usr/bin/bloom-release --rosdistro kilted --track kilted gz_ros2_control` on `Mon, 18 Aug 2025 18:18:17 -0000`
