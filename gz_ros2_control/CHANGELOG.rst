@@ -2,6 +2,12 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.16 (2025-08-18)
+-------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR for Humble (`#637 <https://github.com/ros-controls/gz_ros2_control/issues/637>`_)
+* use gz-physics`#283 <https://github.com/ros-controls/gz_ros2_control/issues/283>`_ to implement joint_states/effort feedback (backport `#186 <https://github.com/ros-controls/gz_ros2_control/issues/186>`_) (`#607 <https://github.com/ros-controls/gz_ros2_control/issues/607>`_)
+* Contributors: Bartłomiej Krajewski, Christoph Fröhlich
+
 0.7.15 (2025-05-23)
 -------------------
 

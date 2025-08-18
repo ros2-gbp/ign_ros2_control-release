@@ -2,6 +2,12 @@
 Changelog for package gz_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.16 (2025-08-18)
+-------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR for Humble (`#637 <https://github.com/ros-controls/gz_ros2_control/issues/637>`_)
+* Fix ackermann example inertial and joint tf publish (`#641 <https://github.com/ros-controls/gz_ros2_control/issues/641>`_) (`#645 <https://github.com/ros-controls/gz_ros2_control/issues/645>`_)
+* Contributors: Bartłomiej Krajewski, mergify[bot]
+
 0.7.15 (2025-05-23)
 -------------------
 * Fix ackermann demo (backport `#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_) (`#585 <https://github.com/ros-controls/gz_ros2_control/issues/585>`_)
