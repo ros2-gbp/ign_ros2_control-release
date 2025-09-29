@@ -94,7 +94,6 @@ class TestFixture(unittest.TestCase):
         )
 
     def test_arm(self, launch_service, proc_info, proc_output):
-
         # Check if the controllers are running
         cnames = [
                   'joint_trajectory_controller',
