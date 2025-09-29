@@ -2,41 +2,29 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.0.4 (2025-09-29)
-------------------
-* Add a custom plugin for simulating actuator dynamics to the demos (`#693 <https://github.com/ros-controls/gz_ros2_control/issues/693>`_)
-* Update docs (`#692 <https://github.com/ros-controls/gz_ros2_control/issues/692>`_)
-* get rid of deprecated rclcpp::spin_some() (`#678 <https://github.com/ros-controls/gz_ros2_control/issues/678>`_)
-* Contributors: Alejandro Hernández Cordero, Christoph Fröhlich
+2.0.12 (2025-09-29)
+-------------------
+* Update docs (`#692 <https://github.com/ros-controls/gz_ros2_control/issues/692>`_) (`#695 <https://github.com/ros-controls/gz_ros2_control/issues/695>`_)
+* Contributors: mergify[bot]
 
-3.0.3 (2025-08-18)
-------------------
-* Fix ackermann example inertial and joint tf publish (`#641 <https://github.com/ros-controls/gz_ros2_control/issues/641>`_)
-* Contributors: Reza Kermani
+2.0.11 (2025-08-18)
+-------------------
+* Fix ackermann example inertial and joint tf publish (`#641 <https://github.com/ros-controls/gz_ros2_control/issues/641>`_) (`#643 <https://github.com/ros-controls/gz_ros2_control/issues/643>`_)
+* Contributors: mergify[bot]
 
-3.0.2 (2025-07-09)
-------------------
-* Added missing exec depend (`#626 <https://github.com/ros-controls/gz_ros2_control/issues/626>`_)
-* Contributors: Alejandro Hernández Cordero
+2.0.10 (2025-07-09)
+-------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (backport `#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_) (`#623 <https://github.com/ros-controls/gz_ros2_control/issues/623>`_)
+* Contributors: mergify[bot]
 
-3.0.1 (2025-07-02)
+2.0.9 (2025-05-26)
 ------------------
-* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (`#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_)
-* Contributors: Bartłomiej Krajewski
-
-3.0.0 (2025-05-26)
-------------------
-* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_)
-* Contributors: Christoph Fröhlich
-
-2.0.8 (2025-05-23)
-------------------
-* Use target_link_libraries instead of ament_target_dependencies (`#586 <https://github.com/ros-controls/gz_ros2_control/issues/586>`_)
-* Fix ackermann demo (`#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_)
-* [kilted] Update deprecated call to ament_target_dependencies (`#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_)
-* Update parameters for steering_controllers_library (`#566 <https://github.com/ros-controls/gz_ros2_control/issues/566>`_)
+* Fix ackermann demo (backport `#582 <https://github.com/ros-controls/gz_ros2_control/issues/582>`_) (`#583 <https://github.com/ros-controls/gz_ros2_control/issues/583>`_)
+* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_) (`#592 <https://github.com/ros-controls/gz_ros2_control/issues/592>`_)
+* [kilted] Update deprecated call to ament_target_dependencies (backport `#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_) (`#576 <https://github.com/ros-controls/gz_ros2_control/issues/576>`_)
+* Update parameters for steering_controllers_library (`#566 <http
 * Use  `--controller-ros-args` to use parser append action in controller spawner (`#546 <https://github.com/ros-controls/gz_ros2_control/issues/546>`_)
-* Contributors: Christoph Fröhlich, David V. Lu!!, Narukara, Sai Kishor Kothakota, louietouie
+* Contributors: louietouie, mergify[bot]
 
 2.0.7 (2025-04-04)
 ------------------
