@@ -106,7 +106,7 @@ public:
 
   /// \brief Last time the update method was called
   rclcpp::Time last_update_sim_time_ros_ =
-    rclcpp::Time((int64_t)0, RCL_ROS_TIME);
+    rclcpp::Time(static_cast<int64_t>(0), RCL_ROS_TIME);
 
   /// \brief ECM pointer
   sim::EntityComponentManager * ecm{nullptr};
@@ -244,11 +244,6 @@ GazeboSimROS2ControlPlugin::GazeboSimROS2ControlPlugin()
 //////////////////////////////////////////////////
 GazeboSimROS2ControlPlugin::~GazeboSimROS2ControlPlugin()
 {
-  // Stop controller manager thread
-  if (!this->dataPtr->controller_manager_) {
-    return;
-  }
-  this->dataPtr->executor_->remove_node(this->dataPtr->controller_manager_);
   this->dataPtr->executor_->cancel();
   this->dataPtr->thread_executor_spin_.join();
 }
