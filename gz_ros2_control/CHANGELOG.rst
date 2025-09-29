@@ -2,6 +2,13 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.17 (2025-09-29)
+-------------------
+* Remove outdated comment (`#687 <https://github.com/ros-controls/gz_ros2_control/issues/687>`_) (`#691 <https://github.com/ros-controls/gz_ros2_control/issues/691>`_)
+* Don't remove the node at destruction (`#683 <https://github.com/ros-controls/gz_ros2_control/issues/683>`_) (`#686 <https://github.com/ros-controls/gz_ros2_control/issues/686>`_)
+* Fix compiler warnings (backport `#674 <https://github.com/ros-controls/gz_ros2_control/issues/674>`_) (`#677 <https://github.com/ros-controls/gz_ros2_control/issues/677>`_)
+* Contributors: mergify[bot]
+
 0.7.16 (2025-08-18)
 -------------------
 * Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR for Humble (`#637 <https://github.com/ros-controls/gz_ros2_control/issues/637>`_)
