@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2023 Open Source Robotics Foundation, Inc.
+# Copyright 2025 ros2_control Maintainers
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ def generate_test_description():
     launch_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                get_package_share_directory('ign_ros2_control_demos'),
-                'launch/cart_example_position.launch.py',
+                get_package_share_directory('gz_ros2_control_demos'),
+                'launch', 'cart_example_velocity_custom_plugin.launch.py',
             )
         ),
         launch_arguments={'gz_args': '--headless-rendering -s'}.items(),
@@ -65,9 +65,11 @@ class TestFixture(unittest.TestCase):
     def tearDownClass(cls):
         for proc in psutil.process_iter():
             # check whether the process name matches
-            if proc.name() == 'ruby':
+            if proc.name() == 'ruby' or 'gz sim' in proc.name():
+                # up to version 9 of gz-sim
                 proc.kill()
-            if 'gz sim' in proc.name():
+            if 'gz-sim' in proc.name():
+                # from version 10 of gz-sim
                 proc.kill()
         rclpy.shutdown()
 
@@ -96,12 +98,15 @@ class TestFixture(unittest.TestCase):
     def test_arm(self, launch_service, proc_info, proc_output):
 
         # Check if the controllers are running
-        cnames = ['joint_trajectory_controller', 'joint_state_broadcaster']
+        cnames = [
+                  'joint_trajectory_controller',
+                  'joint_state_broadcaster'
+                ]
         check_controllers_running(self.node, cnames)
 
         proc_action = Node(
-            package='ign_ros2_control_demos',
-            executable='example_position',
+            package='gz_ros2_control_demos',
+            executable='example_velocity',
             output='screen',
         )
 

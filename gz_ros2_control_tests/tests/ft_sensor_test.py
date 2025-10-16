@@ -65,9 +65,11 @@ class TestFixture(unittest.TestCase):
     def tearDownClass(cls):
         for proc in psutil.process_iter():
             # check whether the process name matches
-            if proc.name() == 'ruby':
+            if proc.name() == 'ruby' or 'gz sim' in proc.name():
+                # up to version 9 of gz-sim
                 proc.kill()
-            if 'gz sim' in proc.name():
+            if 'gz-sim' in proc.name():
+                # from version 10 of gz-sim
                 proc.kill()
         rclpy.shutdown()
 
@@ -94,6 +96,7 @@ class TestFixture(unittest.TestCase):
         )
 
     def test_arm(self, launch_service, proc_info, proc_output):
+
         # Check if the controllers are running
         cnames = [
                   'joint_trajectory_controller',
