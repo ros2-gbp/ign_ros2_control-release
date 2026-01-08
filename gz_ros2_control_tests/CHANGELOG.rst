@@ -2,34 +2,25 @@
 Changelog for package gz_ros2_control_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.0.6 (2026-01-08)
-------------------
+2.0.14 (2026-01-08)
+-------------------
 
-3.0.5 (2025-10-16)
-------------------
+2.0.13 (2025-10-16)
+-------------------
 
-3.0.4 (2025-09-29)
-------------------
-* Add a custom plugin for simulating actuator dynamics to the demos (`#693 <https://github.com/ros-controls/gz_ros2_control/issues/693>`_)
-* Ensure shutdown of gz jetty (`#682 <https://github.com/ros-controls/gz_ros2_control/issues/682>`_)
-* Contributors: Christoph Fröhlich
+2.0.12 (2025-09-29)
+-------------------
 
-3.0.3 (2025-08-18)
-------------------
+2.0.11 (2025-08-18)
+-------------------
 
-3.0.2 (2025-07-09)
-------------------
+2.0.10 (2025-07-09)
+-------------------
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (backport `#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_) (`#623 <https://github.com/ros-controls/gz_ros2_control/issues/623>`_)
+* Bump CMake minimum version (`#601 <https://github.com/ros-controls/gz_ros2_control/issues/601>`_) (`#602 <https://github.com/ros-controls/gz_ros2_control/issues/602>`_)
+* Contributors: mergify[bot]
 
-3.0.1 (2025-07-02)
-------------------
-* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (`#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_)
-* Bump CMake minimum version (`#601 <https://github.com/ros-controls/gz_ros2_control/issues/601>`_)
-* Contributors: Bartłomiej Krajewski, Christoph Fröhlich
-
-3.0.0 (2025-05-26)
-------------------
-
-2.0.8 (2025-05-23)
+2.0.9 (2025-05-26)
 ------------------
 
 2.0.7 (2025-04-04)
