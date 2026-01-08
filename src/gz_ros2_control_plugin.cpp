@@ -213,9 +213,9 @@ GazeboSimROS2ControlPluginPrivate::GetEnabledJoints(
       case sdf::JointType::FIXED:
         {
           RCLCPP_INFO(
-            node_->get_logger(),
-            "[gz_ros2_control] Fixed joint [%s] (Entity=%lu)] is skipped",
-            jointName.c_str(), jointEntity);
+            node_->get_logger(), "[gz_ros2_control] Fixed joint ['%s'] (Entity='%s') is skipped.",
+            jointName.c_str(), std::to_string(jointEntity).c_str()
+          );
           continue;
         }
       case sdf::JointType::REVOLUTE2:
@@ -225,18 +225,19 @@ GazeboSimROS2ControlPluginPrivate::GetEnabledJoints(
         {
           RCLCPP_WARN(
             node_->get_logger(),
-            "[gz_ros2_control] Joint [%s] (Entity=%lu)] is of unsupported type."
+            "[gz_ros2_control] Joint ['%s'] (Entity='%s') is of unsupported type."
             " Only joints with a single axis are supported.",
-            jointName.c_str(), jointEntity);
+            jointName.c_str(), std::to_string(jointEntity).c_str()
+          );
           continue;
         }
       default:
         {
-          RCLCPP_WARN(
+          RCLCPP_WARN_STREAM(
             node_->get_logger(),
-            "[gz_ros2_control] Joint [%s] (Entity=%lu)] is of unknown type",
-            jointName.c_str(), jointEntity);
-          continue;
+            "[gz_ros2_control] Joint [" << jointName << "] (Entity=" << jointEntity
+                                        << ") is of unknown type."
+          );
         }
     }
     output[jointName] = jointEntity;
@@ -269,11 +270,12 @@ void GazeboSimROS2ControlPlugin::Configure(
   // Make sure the controller is attached to a valid model
   const auto model = sim::Model(_entity);
   if (!model.Valid(_ecm)) {
-    RCLCPP_ERROR(
+    RCLCPP_ERROR_STREAM(
       logger,
-      "[Gazebo ROS 2 Control] Failed to initialize because [%s] (Entity=%lu)] is not a model."
-      "Please make sure that Gazebo ROS 2 Control is attached to a valid model.",
-      model.Name(_ecm).c_str(), _entity);
+      "[Gazebo ROS 2 Control] Failed to initialize because ["
+        << model.Name(_ecm) << "] (Entity=" << _entity << ") is not a model. "
+        << "Please make sure that Gazebo ROS 2 Control is attached to a valid model."
+    );
     return;
   }
 
@@ -483,7 +485,7 @@ void GazeboSimROS2ControlPlugin::PreUpdate(
     rclcpp::Duration gazebo_period(_info.dt);
 
     // Check the period against the simulation period
-    if (this->dataPtr->control_period_ < _info.dt) {
+    if (this->dataPtr->control_period_ < gazebo_period) {
       RCLCPP_ERROR_STREAM(
         this->dataPtr->node_->get_logger(),
         "Desired controller update period (" << this->dataPtr->control_period_.seconds() <<
