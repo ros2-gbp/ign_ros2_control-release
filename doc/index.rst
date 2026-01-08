@@ -121,7 +121,7 @@ include:
 Using mimic joints in simulation
 -----------------------------------------------------------
 
-To use ``mimic`` joints in *gz_ros2_control* you should define its parameters in your URDF or SDF, i.e, set the ``<mimic>`` tag to the mimicked joint (see the `URDF specification <https://wiki.ros.org/urdf/XML/joint>`__ or the `SDF specification <http://sdformat.org/spec?ver=1.11&elem=joint#axis_mimic>`__)
+To use ``mimic`` joints in *gz_ros2_control* you should define its parameters in your URDF or SDF, i.e, set the ``<mimic>`` tag to the mimicked joint (see the `URDF specification <https://wiki.ros.org/urdf/XML/joint>`__ or the `SDF specification <https://sdformat.org/spec/1.11/joint/#axis_mimic>`__)
 
 .. code-block:: xml
 
@@ -146,7 +146,9 @@ The mimic joint must not have command interfaces configured in the ``<ros2_contr
 Using force-torque sensors in simulation
 -----------------------------------------------------------
 
-To use ``force-torque`` sensors in *gz_ros2_control* you should define its parameters in your URDF or SDF (see the `SDF specification <http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_force_torque>`__)
+To use ``force-torque`` sensors in *gz_ros2_control* you should define its parameters in your URDF or SDF (see the `SDF specification <https://sdformat.org/spec/1.12/sensor/#sensor_force_torque>`__)
+
+An example in SDF is shown here:
 
 .. code-block:: xml
 
@@ -157,7 +159,23 @@ To use ``force-torque`` sensors in *gz_ros2_control* you should define its param
     <topic>force_torque_sensor</topic>
   </sensor>
 
-It is important to add this as ``reference`` sensor in the ``<gazebo>`` tag in your URDF file.
+It is important to add this as ``reference`` sensor in the ``<gazebo>`` tag in your URDF file where the reference is the joint you will be attaching the force torque sensor to:
+
+.. code-block:: xml
+
+  <gazebo reference="attached_joint">
+    <!-- If 'attached_joint' is of 'fixed' type,
+    setting 'preserveFixedJoint' to true will prevent the
+    links from being lumped together during the URDF to
+    SDF conversion. Otherwise, it can be omitted. -->
+    <preserveFixedJoint>true</preserveFixedJoint>
+    <sensor name="force_torque_sensor" type="force_torque">
+      <update_rate>10.0</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>force_torque_sensor</topic>
+    </sensor>
+  </gazebo>
 
 Add the gz_ros2_control plugin
 ==========================================
