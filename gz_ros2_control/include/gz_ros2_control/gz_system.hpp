@@ -39,16 +39,18 @@ class GazeboSimSystem : public GazeboSimSystemInterface
 {
 public:
   // Documentation Inherited
-  CallbackReturn on_init(const hardware_interface::HardwareInfo & system_info)
+  CallbackReturn on_init(const hardware_interface::HardwareComponentInterfaceParams & params)
   override;
 
   CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state) override;
 
   // Documentation Inherited
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+  std::vector<hardware_interface::StateInterface::ConstSharedPtr>
+  on_export_state_interfaces() override;
 
   // Documentation Inherited
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+  std::vector<hardware_interface::CommandInterface::SharedPtr>
+  on_export_command_interfaces() override;
 
   // Documentation Inherited
   CallbackReturn on_activate(const rclcpp_lifecycle::State & previous_state) override;
@@ -77,7 +79,7 @@ public:
     std::map<std::string, sim::Entity> & joints,
     const hardware_interface::HardwareInfo & hardware_info,
     sim::EntityComponentManager & _ecm,
-    int & update_rate) override;
+    unsigned int update_rate) override;
 
 private:
   // Register a sensor (for now just IMUs)
@@ -91,11 +93,5 @@ private:
 };
 
 }  // namespace gz_ros2_control
-
-// for backward compatibility
-namespace ign_ros2_control
-{
-using IgnitionSystem = gz_ros2_control::GazeboSimSystem;
-}  // namespace ign_ros2_control
 
 #endif  // GZ_ROS2_CONTROL__GZ_SYSTEM_HPP_
