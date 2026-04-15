@@ -1,4 +1,4 @@
-# Copyright 2024 ros2_control Development Team
+# Copyright 2025 AIT Austrian Institute of Technology GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ def generate_launch_description():
     # Launch Arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default=True)
     gz_args = LaunchConfiguration('gz_args', default='')
+
     # Get URDF via xacro
     robot_description_content = Command(
         [
@@ -34,7 +35,7 @@ def generate_launch_description():
             ' ',
             PathJoinSubstitution(
                 [FindPackageShare('gz_ros2_control_demos'),
-                 'urdf', 'test_pendulum_effort.xacro.urdf']
+                 'urdf', 'test_cart_velocity_custom_plugin.xacro.urdf']
             ),
         ]
     )
@@ -43,7 +44,7 @@ def generate_launch_description():
         [
             FindPackageShare('gz_ros2_control_demos'),
             'config',
-            'cart_controller_effort.yaml',
+            'cart_controller_velocity.yaml',
         ]
     )
 
