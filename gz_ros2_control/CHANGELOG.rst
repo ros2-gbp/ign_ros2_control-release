@@ -2,62 +2,51 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.0.7 (2026-04-15)
-------------------
-* Fix race condition in RM initialization (restore 2000 ms wait) (`#809 <https://github.com/ros-controls/gz_ros2_control/issues/809>`_)
-* Precompute interface names (`#789 <https://github.com/ros-controls/gz_ros2_control/issues/789>`_)
-* Minor improvements (`#800 <https://github.com/ros-controls/gz_ros2_control/issues/800>`_)
-* Removed dead code (`#791 <https://github.com/ros-controls/gz_ros2_control/issues/791>`_)
-* Fix return on_activate and on_deactivate (`#790 <https://github.com/ros-controls/gz_ros2_control/issues/790>`_)
-* Removed unnecesary defines and removed ndof attribute (`#788 <https://github.com/ros-controls/gz_ros2_control/issues/788>`_)
-* Only set_value if the interface is valid (`#771 <https://github.com/ros-controls/gz_ros2_control/issues/771>`_)
-* Migrate to the new Handles API with variants in the Hardware Components (`#763 <https://github.com/ros-controls/gz_ros2_control/issues/763>`_)
-* Contributors: Alejandro Hernández Cordero, José Luis Pérez Martín, Sai Kishor Kothakota
+2.0.15 (2026-04-15)
+-------------------
+* Fix race condition in RM initialization (restore 2000 ms wait) (`#809 <https://github.com/ros-controls/gz_ros2_control/issues/809>`_) (`#810 <https://github.com/ros-controls/gz_ros2_control/issues/810>`_)
+* Precompute interface names (backport `#789 <https://github.com/ros-controls/gz_ros2_control/issues/789>`_) (`#805 <https://github.com/ros-controls/gz_ros2_control/issues/805>`_)
+* Minor improvements (backport `#800 <https://github.com/ros-controls/gz_ros2_control/issues/800>`_) (`#802 <https://github.com/ros-controls/gz_ros2_control/issues/802>`_)
+* Removed dead code (`#791 <https://github.com/ros-controls/gz_ros2_control/issues/791>`_) (`#797 <https://github.com/ros-controls/gz_ros2_control/issues/797>`_)
+* Removed unnecesary defines and removed ndof attribute (`#788 <https://github.com/ros-controls/gz_ros2_control/issues/788>`_) (`#796 <https://github.com/ros-controls/gz_ros2_control/issues/796>`_)
+* Fix return on_activate and on_deactivate (`#790 <https://github.com/ros-controls/gz_ros2_control/issues/790>`_) (`#794 <https://github.com/ros-controls/gz_ros2_control/issues/794>`_)
+* Contributors: mergify[bot]
 
-3.0.6 (2026-01-08)
-------------------
-* Removed unused ament_index_cpp (`#760 <https://github.com/ros-controls/gz_ros2_control/issues/760>`_)
-* fix failing pre-commit (`#741 <https://github.com/ros-controls/gz_ros2_control/issues/741>`_)
-* Fix platform-independent logging in `gz_ros2_control` plugin (`#740 <https://github.com/ros-controls/gz_ros2_control/issues/740>`_)
-* Minor code consistency fix (`#732 <https://github.com/ros-controls/gz_ros2_control/issues/732>`_)
-* Contributors: Alejandro Hernández Cordero, Dhruv Patel, Patrick Roncagliolo, Sai Kishor Kothakota
+2.0.14 (2026-01-08)
+-------------------
+* Removed unused ament_index_cpp (`#760 <https://github.com/ros-controls/gz_ros2_control/issues/760>`_) (`#761 <https://github.com/ros-controls/gz_ros2_control/issues/761>`_)
+* Minor code consistency fix (`#732 <https://github.com/ros-controls/gz_ros2_control/issues/732>`_) (`#733 <https://github.com/ros-controls/gz_ros2_control/issues/733>`_)
+* Contributors: mergify[bot]
 
-3.0.5 (2025-10-16)
-------------------
-* Remove deprecated on_init (`#699 <https://github.com/ros-controls/gz_ros2_control/issues/699>`_)
-* Contributors: Christoph Fröhlich
+2.0.13 (2025-10-16)
+-------------------
+* Remove deprecated on_init (`#699 <https://github.com/ros-controls/gz_ros2_control/issues/699>`_) (`#704 <https://github.com/ros-controls/gz_ros2_control/issues/704>`_)
+* Contributors: mergify[bot]
 
-3.0.4 (2025-09-29)
-------------------
-* Modernize CMakeLists (`#688 <https://github.com/ros-controls/gz_ros2_control/issues/688>`_)
-* Remove outdated comment (`#687 <https://github.com/ros-controls/gz_ros2_control/issues/687>`_)
-* Don't remove the node at destruction (`#683 <https://github.com/ros-controls/gz_ros2_control/issues/683>`_)
-* Suppress warning (`#679 <https://github.com/ros-controls/gz_ros2_control/issues/679>`_)
-* Fix compiler warnings (`#674 <https://github.com/ros-controls/gz_ros2_control/issues/674>`_)
-* Contributors: Alejandro Hernández Cordero, Christoph Fröhlich
+2.0.12 (2025-09-29)
+-------------------
+* Modernize CMakeLists (`#688 <https://github.com/ros-controls/gz_ros2_control/issues/688>`_) (`#697 <https://github.com/ros-controls/gz_ros2_control/issues/697>`_)
+* Remove outdated comment (`#687 <https://github.com/ros-controls/gz_ros2_control/issues/687>`_) (`#689 <https://github.com/ros-controls/gz_ros2_control/issues/689>`_)
+* Don't remove the node at destruction (`#683 <https://github.com/ros-controls/gz_ros2_control/issues/683>`_) (`#684 <https://github.com/ros-controls/gz_ros2_control/issues/684>`_)
+* Suppress warning (`#679 <https://github.com/ros-controls/gz_ros2_control/issues/679>`_) (`#680 <https://github.com/ros-controls/gz_ros2_control/issues/680>`_)
+* Fix compiler warnings (`#674 <https://github.com/ros-controls/gz_ros2_control/issues/674>`_) (`#675 <https://github.com/ros-controls/gz_ros2_control/issues/675>`_)
+* Contributors: mergify[bot]
 
-3.0.3 (2025-08-18)
-------------------
+2.0.11 (2025-08-18)
+-------------------
 
-3.0.2 (2025-07-09)
-------------------
+2.0.10 (2025-07-09)
+-------------------
+* Shift to Struct based Method and Constructors, with Executor passed from CM to on_init() (`#613 <https://github.com/ros-controls/gz_ros2_control/issues/613>`_) (`#627 <https://github.com/ros-controls/gz_ros2_control/issues/627>`_)
+* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (backport `#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_) (`#623 <https://github.com/ros-controls/gz_ros2_control/issues/623>`_)
+* Bump CMake minimum version (`#601 <https://github.com/ros-controls/gz_ros2_control/issues/601>`_) (`#602 <https://github.com/ros-controls/gz_ros2_control/issues/602>`_)
+* Contributors: mergify[bot]
 
-3.0.1 (2025-07-02)
+2.0.9 (2025-05-26)
 ------------------
-* Provide force-torque sensor data through gz_system to controller_manager - fixes to original PR  (`#610 <https://github.com/ros-controls/gz_ros2_control/issues/610>`_)
-* Shift to Struct based Method and Constructors, with Executor passed from CM to on_init() (`#613 <https://github.com/ros-controls/gz_ros2_control/issues/613>`_)
-* Bump CMake minimum version (`#601 <https://github.com/ros-controls/gz_ros2_control/issues/601>`_)
-* Contributors: Bartłomiej Krajewski, Christoph Fröhlich, Soham Patil
-
-3.0.0 (2025-05-26)
-------------------
-* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_)
-* Contributors: Christoph Fröhlich
-
-2.0.8 (2025-05-23)
-------------------
-* [kilted] Update deprecated call to ament_target_dependencies (`#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_)
-* Contributors: David V. Lu!!
+* Use ros2_control_cmake (`#588 <https://github.com/ros-controls/gz_ros2_control/issues/588>`_) (`#592 <https://github.com/ros-controls/gz_ros2_control/issues/592>`_)
+* [kilted] Update deprecated call to ament_target_dependencies (backport `#575 <https://github.com/ros-controls/gz_ros2_control/issues/575>`_) (`#576 <https://github.com/ros-controls/gz_ros2_control/issues/576>`_)
+* Contributors: mergify[bot]
 
 2.0.7 (2025-04-04)
 ------------------
