@@ -14,6 +14,9 @@
 
 #include "gz_ros2_control/gz_system.hpp"
 
+#include <gz/msgs/imu.pb.h>
+#include <gz/msgs/wrench.pb.h>
+
 #include <array>
 #include <cstddef>
 #include <limits>
@@ -23,10 +26,6 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#ifdef GZ_HEADERS
-#include <gz/msgs/imu.pb.h>
-#include <gz/msgs/wrench.pb.h>
 
 #include <gz/physics/Geometry.hh>
 #include <gz/sim/components/AngularVelocity.hh>
@@ -47,40 +46,22 @@
 #include <gz/sim/components/Pose.hh>
 #include <gz/sim/components/Sensor.hh>
 #include <gz/transport/Node.hh>
-#define GZ_TRANSPORT_NAMESPACE gz::transport::
-#define GZ_MSGS_NAMESPACE gz::msgs::
-#define GZ_PHYSICS_NAMESPACE gz::physics::
-#define GZ_VECTOR_DOT dot
-#else
-#include <ignition/msgs/imu.pb.h>
-#include <ignition/msgs/wrench.pb.h>
-
-#include <ignition/math/Vector3.hh>
-#include <ignition/gazebo/components/AngularVelocity.hh>
-#include <ignition/gazebo/components/Imu.hh>
-#include <ignition/gazebo/components/ForceTorque.hh>
-#include <ignition/gazebo/components/JointAxis.hh>
-#include <ignition/gazebo/components/JointForceCmd.hh>
-#include <ignition/gazebo/components/JointPosition.hh>
-#include <ignition/gazebo/components/JointPositionReset.hh>
-#include <ignition/gazebo/components/JointTransmittedWrench.hh>
-#include <ignition/gazebo/components/JointType.hh>
-#include <ignition/gazebo/components/JointVelocityCmd.hh>
-#include <ignition/gazebo/components/JointVelocity.hh>
-#include <ignition/gazebo/components/JointVelocityReset.hh>
-#include <ignition/gazebo/components/LinearAcceleration.hh>
-#include <ignition/gazebo/components/Name.hh>
-#include <ignition/gazebo/components/ParentEntity.hh>
-#include <ignition/gazebo/components/Pose.hh>
-#include <ignition/gazebo/components/Sensor.hh>
-#include <ignition/transport/Node.hh>
-#define GZ_TRANSPORT_NAMESPACE ignition::transport::
-#define GZ_MSGS_NAMESPACE ignition::msgs::
-#define GZ_PHYSICS_NAMESPACE ignition::math::
-#define GZ_VECTOR_DOT Dot
-#endif
 
 #include <hardware_interface/hardware_info.hpp>
+#include <hardware_interface/lexical_casts.hpp>
+#include <hardware_interface/types/hardware_interface_type_values.hpp>
+
+struct InterfaceData
+{
+  /// \brief State interface shared pointer
+  hardware_interface::StateInterface::SharedPtr state;
+
+  /// \brief Value of the state to be able to use even when the interface is not defined
+  double state_value{std::numeric_limits<double>::quiet_NaN()};
+
+  /// \brief Command interface shared pointer
+  hardware_interface::CommandInterface::SharedPtr command;
+};
 
 struct jointData
 {
@@ -93,23 +74,14 @@ struct jointData
   /// \brief Joint's axis.
   sdf::JointAxis joint_axis;
 
-  /// \brief Current joint position
-  double joint_position;
+  /// \brief Current state and command joint position
+  InterfaceData position;
 
-  /// \brief Current joint velocity
-  double joint_velocity;
+  /// \brief Current state and command joint velocity
+  InterfaceData velocity;
 
-  /// \brief Current joint effort
-  double joint_effort;
-
-  /// \brief Current cmd joint position
-  double joint_position_cmd;
-
-  /// \brief Current cmd joint velocity
-  double joint_velocity_cmd;
-
-  /// \brief Current cmd joint effort
-  double joint_effort_cmd;
+  /// \brief Current state and command joint effort
+  InterfaceData effort;
 
   /// \brief flag if joint is actuated (has command interfaces) or passive
   bool is_actuated;
@@ -127,14 +99,6 @@ struct jointData
   std::string if_name_effort;
 };
 
-struct MimicJoint
-{
-  std::size_t joint_index;
-  std::size_t mimicked_joint_index;
-  double multiplier = 1.0;
-  std::vector<std::string> interfaces_to_mimic;
-};
-
 class ForceTorqueData
 {
 public:
@@ -147,21 +111,33 @@ public:
   /// \brief handles to the force torque from within Gazebo
   sim::Entity sim_ft_sensors_ = sim::kNullEntity;
 
-  /// \brief An array per FT
-  std::array<double, 6> ft_sensor_data_;
+  /// \brief State interfaces for FT sensor data
+  std::array<hardware_interface::StateInterface::SharedPtr, 6> state_interfaces_;
 
   /// \brief callback to get the Force Torque topic values
-  void OnForceTorque(const GZ_MSGS_NAMESPACE Wrench & _msg);
+  void OnForceTorque(const gz::msgs::Wrench & _msg);
 };
 
-void ForceTorqueData::OnForceTorque(const GZ_MSGS_NAMESPACE Wrench & _msg)
+void ForceTorqueData::OnForceTorque(const gz::msgs::Wrench & _msg)
 {
-  this->ft_sensor_data_[0] = _msg.force().x();
-  this->ft_sensor_data_[1] = _msg.force().y();
-  this->ft_sensor_data_[2] = _msg.force().z();
-  this->ft_sensor_data_[3] = _msg.torque().x();
-  this->ft_sensor_data_[4] = _msg.torque().y();
-  this->ft_sensor_data_[5] = _msg.torque().z();
+  if (state_interfaces_[0]) {
+    (void)state_interfaces_[0]->set_value(_msg.force().x(), true);
+  }
+  if (state_interfaces_[1]) {
+    (void)state_interfaces_[1]->set_value(_msg.force().y(), true);
+  }
+  if (state_interfaces_[2]) {
+    (void)state_interfaces_[2]->set_value(_msg.force().z(), true);
+  }
+  if (state_interfaces_[3]) {
+    (void)state_interfaces_[3]->set_value(_msg.torque().x(), true);
+  }
+  if (state_interfaces_[4]) {
+    (void)state_interfaces_[4]->set_value(_msg.torque().y(), true);
+  }
+  if (state_interfaces_[5]) {
+    (void)state_interfaces_[5]->set_value(_msg.torque().z(), true);
+  }
 }
 
 class ImuData
@@ -176,25 +152,46 @@ public:
   /// \brief handles to the imu from within Gazebo
   sim::Entity sim_imu_sensors_ = sim::kNullEntity;
 
-  /// \brief An array per IMU with 4 orientation, 3 angular velocity and 3 linear acceleration
-  std::array<double, 10> imu_sensor_data_;
+  /// \brief State interfaces for IMU data
+  /// (4 orientation, 3 angular velocity, 3 linear acceleration)
+  std::array<hardware_interface::StateInterface::SharedPtr, 10> state_interfaces_;
 
   /// \brief callback to get the IMU topic values
-  void OnIMU(const GZ_MSGS_NAMESPACE IMU & _msg);
+  void OnIMU(const gz::msgs::IMU & _msg);
 };
 
-void ImuData::OnIMU(const GZ_MSGS_NAMESPACE IMU & _msg)
+void ImuData::OnIMU(const gz::msgs::IMU & _msg)
 {
-  this->imu_sensor_data_[0] = _msg.orientation().x();
-  this->imu_sensor_data_[1] = _msg.orientation().y();
-  this->imu_sensor_data_[2] = _msg.orientation().z();
-  this->imu_sensor_data_[3] = _msg.orientation().w();
-  this->imu_sensor_data_[4] = _msg.angular_velocity().x();
-  this->imu_sensor_data_[5] = _msg.angular_velocity().y();
-  this->imu_sensor_data_[6] = _msg.angular_velocity().z();
-  this->imu_sensor_data_[7] = _msg.linear_acceleration().x();
-  this->imu_sensor_data_[8] = _msg.linear_acceleration().y();
-  this->imu_sensor_data_[9] = _msg.linear_acceleration().z();
+  if (state_interfaces_[0]) {
+    (void)state_interfaces_[0]->set_value(_msg.orientation().x(), true);
+  }
+  if (state_interfaces_[1]) {
+    (void)state_interfaces_[1]->set_value(_msg.orientation().y(), true);
+  }
+  if (state_interfaces_[2]) {
+    (void)state_interfaces_[2]->set_value(_msg.orientation().z(), true);
+  }
+  if (state_interfaces_[3]) {
+    (void)state_interfaces_[3]->set_value(_msg.orientation().w(), true);
+  }
+  if (state_interfaces_[4]) {
+    (void)state_interfaces_[4]->set_value(_msg.angular_velocity().x(), true);
+  }
+  if (state_interfaces_[5]) {
+    (void)state_interfaces_[5]->set_value(_msg.angular_velocity().y(), true);
+  }
+  if (state_interfaces_[6]) {
+    (void)state_interfaces_[6]->set_value(_msg.angular_velocity().z(), true);
+  }
+  if (state_interfaces_[7]) {
+    (void)state_interfaces_[7]->set_value(_msg.linear_acceleration().x(), true);
+  }
+  if (state_interfaces_[8]) {
+    (void)state_interfaces_[8]->set_value(_msg.linear_acceleration().y(), true);
+  }
+  if (state_interfaces_[9]) {
+    (void)state_interfaces_[9]->set_value(_msg.linear_acceleration().z(), true);
+  }
 }
 
 class gz_ros2_control::GazeboSimSystemPrivate
@@ -203,8 +200,6 @@ public:
   GazeboSimSystemPrivate() = default;
 
   ~GazeboSimSystemPrivate() = default;
-  /// \brief Degrees od freedom.
-  size_t n_dof_;
 
   /// \brief last time the write method was called.
   rclcpp::Time last_update_sim_time_ros_;
@@ -219,58 +214,97 @@ public:
   std::vector<std::shared_ptr<ForceTorqueData>> ft_sensors_;
 
   /// \brief state interfaces that will be exported to the Resource Manager
-  std::vector<hardware_interface::StateInterface> state_interfaces_;
+  std::vector<hardware_interface::StateInterface::SharedPtr> state_interfaces_;
 
   /// \brief command interfaces that will be exported to the Resource Manager
-  std::vector<hardware_interface::CommandInterface> command_interfaces_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> command_interfaces_;
 
   /// \brief Entity component manager, ECM shouldn't be accessed outside those
   /// methods, otherwise the app will crash
   sim::EntityComponentManager * ecm;
 
   /// \brief controller update rate
-  int * update_rate;
+  unsigned int update_rate;
 
-  /// \brief Ignition communication node.
-  GZ_TRANSPORT_NAMESPACE Node node;
-
-  /// \brief mapping of mimicked joints to index of joint they mimic
-  std::vector<MimicJoint> mimic_joints_;
+  /// \brief Gazebo communication node.
+  gz::transport::Node node;
 
   /// \brief Gain which converts position error to a velocity command
   double position_proportional_gain_;
+
+  // Should hold the joints if no control_mode is active
+  bool hold_joints_ = true;
 };
 
 namespace gz_ros2_control
 {
+
 bool GazeboSimSystem::initSim(
   rclcpp::Node::SharedPtr & model_nh,
   std::map<std::string, sim::Entity> & enableJoints,
   const hardware_interface::HardwareInfo & hardware_info,
   sim::EntityComponentManager & _ecm,
-  int & update_rate)
+  unsigned int update_rate)
 {
   this->dataPtr = std::make_unique<GazeboSimSystemPrivate>();
   this->dataPtr->last_update_sim_time_ros_ = rclcpp::Time();
 
   this->nh_ = model_nh;
   this->dataPtr->ecm = &_ecm;
-  this->dataPtr->n_dof_ = hardware_info.joints.size();
 
-  this->dataPtr->update_rate = &update_rate;
-
-  RCLCPP_DEBUG(this->nh_->get_logger(), "n_dof_ %lu", this->dataPtr->n_dof_);
-
-  this->dataPtr->joints_.resize(this->dataPtr->n_dof_);
-
-  constexpr double default_gain = 0.1;
+  this->dataPtr->update_rate = update_rate;
 
   try {
-    this->dataPtr->position_proportional_gain_ = this->nh_->declare_parameter<double>(
-      "position_proportional_gain", default_gain);
-  } catch (rclcpp::exceptions::ParameterAlreadyDeclaredException & ex) {
-    this->nh_->get_parameter(
-      "position_proportional_gain", this->dataPtr->position_proportional_gain_);
+    this->dataPtr->hold_joints_ = this->nh_->get_parameter("hold_joints").as_bool();
+  } catch (rclcpp::exceptions::ParameterUninitializedException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'hold_joints' not initialized, with error %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(), "Using default value: " << this->dataPtr->hold_joints_);
+  } catch (rclcpp::exceptions::ParameterNotDeclaredException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'hold_joints' not declared, with error %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(), "Using default value: " << this->dataPtr->hold_joints_);
+  } catch (rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'hold_joints' has wrong type: %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(), "Using default value: " << this->dataPtr->hold_joints_);
+  }
+  RCLCPP_DEBUG_STREAM(
+    this->nh_->get_logger(), "hold_joints (system): " << this->dataPtr->hold_joints_ << std::endl);
+
+
+  this->dataPtr->joints_.resize(hardware_info.joints.size());
+
+  try {
+    this->dataPtr->position_proportional_gain_ =
+      this->nh_->get_parameter("position_proportional_gain").as_double();
+  } catch (rclcpp::exceptions::ParameterUninitializedException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'position_proportional_gain' not initialized, with error %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(),
+      "Using default value: " << this->dataPtr->position_proportional_gain_);
+  } catch (rclcpp::exceptions::ParameterNotDeclaredException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'position_proportional_gain' not declared, with error %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(),
+      "Using default value: " << this->dataPtr->position_proportional_gain_);
+  } catch (rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(
+      this->nh_->get_logger(),
+      "Parameter 'position_proportional_gain' has wrong type: %s", ex.what());
+    RCLCPP_WARN_STREAM(
+      this->nh_->get_logger(),
+      "Using default value: " << this->dataPtr->position_proportional_gain_);
   }
 
   RCLCPP_INFO_STREAM(
@@ -278,24 +312,24 @@ bool GazeboSimSystem::initSim(
     "The position_proportional_gain has been set to: " <<
       this->dataPtr->position_proportional_gain_);
 
-  if (this->dataPtr->n_dof_ == 0) {
+  if (this->dataPtr->joints_.empty()) {
     RCLCPP_ERROR_STREAM(this->nh_->get_logger(), "There is no joint available");
     return false;
   }
 
-  for (unsigned int j = 0; j < this->dataPtr->n_dof_; j++) {
+  for (unsigned int j = 0; j < this->dataPtr->joints_.size(); j++) {
     auto & joint_info = hardware_info.joints[j];
     std::string joint_name = this->dataPtr->joints_[j].name = joint_info.name;
 
-    auto it = enableJoints.find(joint_name);
-    if (it == enableJoints.end()) {
+    auto it_joint = enableJoints.find(joint_name);
+    if (it_joint == enableJoints.end()) {
       RCLCPP_WARN_STREAM(
         this->nh_->get_logger(), "Skipping joint in the URDF named '" << joint_name <<
           "' which is not in the gazebo model.");
       continue;
     }
 
-    sim::Entity simjoint = it->second;
+    sim::Entity simjoint = it_joint->second;
     this->dataPtr->joints_[j].sim_joint = simjoint;
     this->dataPtr->joints_[j].joint_type = _ecm.Component<sim::components::JointType>(
       simjoint)->Data();
@@ -329,8 +363,6 @@ bool GazeboSimSystem::initSim(
     // Accept this joint and continue configuration
     RCLCPP_INFO_STREAM(this->nh_->get_logger(), "Loading joint: " << joint_name);
 
-    std::string suffix = "";
-
     // Precompute interface names once to avoid allocations in perform_command_mode_switch
     this->dataPtr->joints_[j].if_name_position =
       joint_name + "/" + hardware_interface::HW_IF_POSITION;
@@ -340,56 +372,19 @@ bool GazeboSimSystem::initSim(
       joint_name + "/" + hardware_interface::HW_IF_EFFORT;
 
     // check if joint is mimicked
-    if (joint_info.parameters.find("mimic") != joint_info.parameters.end()) {
-      const auto mimicked_joint = joint_info.parameters.at("mimic");
-      const auto mimicked_joint_it = std::find_if(
-        hardware_info.joints.begin(), hardware_info.joints.end(),
-        [&mimicked_joint](const hardware_interface::ComponentInfo & info) {
-          return info.name == mimicked_joint;
-        });
-      if (mimicked_joint_it == hardware_info.joints.end()) {
-        throw std::runtime_error(
-                std::string("Mimicked joint '") + mimicked_joint + "' not found");
-      }
+    auto it = std::find_if(
+      hardware_info.mimic_joints.begin(),
+      hardware_info.mimic_joints.end(),
+      [j](const hardware_interface::MimicJoint & mj) {
+        return mj.joint_index == j;
+      });
 
-      MimicJoint mimic_joint;
-      mimic_joint.joint_index = j;
-      mimic_joint.mimicked_joint_index = std::distance(
-        hardware_info.joints.begin(), mimicked_joint_it);
-      auto param_it = joint_info.parameters.find("multiplier");
-      if (param_it != joint_info.parameters.end()) {
-        mimic_joint.multiplier = std::stod(joint_info.parameters.at("multiplier"));
-      } else {
-        mimic_joint.multiplier = 1.0;
-      }
-
-      // check joint info of mimicked joint
-      auto & joint_info_mimicked = hardware_info.joints[mimic_joint.mimicked_joint_index];
-      const auto state_mimicked_interface = std::find_if(
-        joint_info_mimicked.state_interfaces.begin(), joint_info_mimicked.state_interfaces.end(),
-        [&mimic_joint](const hardware_interface::InterfaceInfo & interface_info) {
-          bool pos = interface_info.name == "position";
-          if (pos) {mimic_joint.interfaces_to_mimic.push_back(hardware_interface::HW_IF_POSITION);}
-          bool vel = interface_info.name == "velocity";
-          if (vel) {mimic_joint.interfaces_to_mimic.push_back(hardware_interface::HW_IF_VELOCITY);}
-          bool eff = interface_info.name == "effort";
-          if (vel) {mimic_joint.interfaces_to_mimic.push_back(hardware_interface::HW_IF_EFFORT);}
-          return pos || vel || eff;
-        });
-      if (state_mimicked_interface == joint_info_mimicked.state_interfaces.end()) {
-        throw std::runtime_error(
-                std::string(
-                  "For mimic joint '") + joint_info.name +
-                "' no state interface was found in mimicked joint '" + mimicked_joint +
-                " ' to mimic");
-      }
+    if (it != hardware_info.mimic_joints.end()) {
       RCLCPP_INFO_STREAM(
         this->nh_->get_logger(),
-        "Joint '" << joint_name << "'is mimicking joint '"
-                  << mimicked_joint << "' with multiplier: "
-                  << mimic_joint.multiplier);
-      this->dataPtr->mimic_joints_.push_back(mimic_joint);
-      suffix = "_mimic";
+        "Joint '" << joint_name << "'is mimicking joint '" <<
+          this->dataPtr->joints_[it->mimicked_joint_index].name <<
+          "' with multiplier: " << it->multiplier << " and offset: " << it->offset);
     }
 
     RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\tState:");
@@ -399,7 +394,7 @@ bool GazeboSimSystem::initSim(
         double initial_value{0.0};
         if (!interface_info.initial_value.empty()) {
           try {
-            initial_value = std::stod(interface_info.initial_value);
+            initial_value = hardware_interface::stod(interface_info.initial_value);
             RCLCPP_INFO(this->nh_->get_logger(), "\t\t\t found initial value: %f", initial_value);
           } catch (std::invalid_argument &) {
             RCLCPP_ERROR_STREAM(
@@ -423,30 +418,36 @@ bool GazeboSimSystem::initSim(
     for (unsigned int i = 0; i < joint_info.state_interfaces.size(); ++i) {
       if (joint_info.state_interfaces[i].name == "position") {
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t position");
-        this->dataPtr->state_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_POSITION,
-          &this->dataPtr->joints_[j].joint_position);
         initial_position = get_initial_value(joint_info.state_interfaces[i]);
-        this->dataPtr->joints_[j].joint_position = initial_position;
+        this->dataPtr->joints_[j].position.state =
+          std::make_shared<hardware_interface::StateInterface>(
+          joint_name,
+          hardware_interface::HW_IF_POSITION);
+        (void)this->dataPtr->joints_[j].position.state->set_value(initial_position, true);
+        this->dataPtr->joints_[j].position.state_value = initial_position;
+        this->dataPtr->state_interfaces_.push_back(this->dataPtr->joints_[j].position.state);
       }
       if (joint_info.state_interfaces[i].name == "velocity") {
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t velocity");
-        this->dataPtr->state_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_VELOCITY,
-          &this->dataPtr->joints_[j].joint_velocity);
         initial_velocity = get_initial_value(joint_info.state_interfaces[i]);
-        this->dataPtr->joints_[j].joint_velocity = initial_velocity;
+        this->dataPtr->joints_[j].velocity.state =
+          std::make_shared<hardware_interface::StateInterface>(
+          joint_name,
+          hardware_interface::HW_IF_VELOCITY);
+        (void)this->dataPtr->joints_[j].velocity.state->set_value(initial_velocity, true);
+        this->dataPtr->joints_[j].velocity.state_value = initial_velocity;
+        this->dataPtr->state_interfaces_.push_back(this->dataPtr->joints_[j].velocity.state);
       }
       if (joint_info.state_interfaces[i].name == "effort") {
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t effort");
-        this->dataPtr->state_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_EFFORT,
-          &this->dataPtr->joints_[j].joint_effort);
         initial_effort = get_initial_value(joint_info.state_interfaces[i]);
-        this->dataPtr->joints_[j].joint_effort = initial_effort;
+        this->dataPtr->joints_[j].effort.state =
+          std::make_shared<hardware_interface::StateInterface>(
+          joint_name,
+          hardware_interface::HW_IF_EFFORT);
+        (void)this->dataPtr->joints_[j].effort.state->set_value(initial_effort, true);
+        this->dataPtr->joints_[j].effort.state_value = initial_effort;
+        this->dataPtr->state_interfaces_.push_back(this->dataPtr->joints_[j].effort.state);
       }
     }
 
@@ -456,46 +457,46 @@ bool GazeboSimSystem::initSim(
     for (unsigned int i = 0; i < joint_info.command_interfaces.size(); ++i) {
       if (joint_info.command_interfaces[i].name == "position") {
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t position");
-        this->dataPtr->command_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_POSITION,
-          &this->dataPtr->joints_[j].joint_position_cmd);
-        if (!std::isnan(initial_position)) {
-          this->dataPtr->joints_[j].joint_position_cmd = initial_position;
+        this->dataPtr->joints_[j].position.command =
+          std::make_shared<hardware_interface::CommandInterface>(
+          joint_name,
+          hardware_interface::HW_IF_POSITION);
+        if (std::isfinite(initial_position)) {
+          (void)this->dataPtr->joints_[j].position.command->set_value(initial_position, true);
         }
+        this->dataPtr->command_interfaces_.push_back(this->dataPtr->joints_[j].position.command);
       } else if (joint_info.command_interfaces[i].name == "velocity") {
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t velocity");
-        this->dataPtr->command_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_VELOCITY,
-          &this->dataPtr->joints_[j].joint_velocity_cmd);
-        if (!std::isnan(initial_velocity)) {
-          this->dataPtr->joints_[j].joint_velocity_cmd = initial_velocity;
+        this->dataPtr->joints_[j].velocity.command =
+          std::make_shared<hardware_interface::CommandInterface>(
+          joint_name,
+          hardware_interface::HW_IF_VELOCITY);
+        if (std::isfinite(initial_velocity)) {
+          (void)this->dataPtr->joints_[j].velocity.command->set_value(initial_velocity, true);
         }
+        this->dataPtr->command_interfaces_.push_back(this->dataPtr->joints_[j].velocity.command);
       } else if (joint_info.command_interfaces[i].name == "effort") {
-        this->dataPtr->joints_[j].joint_control_method |= EFFORT;
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t effort");
-        this->dataPtr->command_interfaces_.emplace_back(
-          joint_name + suffix,
-          hardware_interface::HW_IF_EFFORT,
-          &this->dataPtr->joints_[j].joint_effort_cmd);
-        if (!std::isnan(initial_effort)) {
-          this->dataPtr->joints_[j].joint_effort_cmd = initial_effort;
+        this->dataPtr->joints_[j].effort.command =
+          std::make_shared<hardware_interface::CommandInterface>(
+          joint_name,
+          hardware_interface::HW_IF_EFFORT);
+        if (std::isfinite(initial_effort)) {
+          (void)this->dataPtr->joints_[j].effort.command->set_value(initial_effort, true);
         }
+        this->dataPtr->command_interfaces_.push_back(this->dataPtr->joints_[j].effort.command);
       }
-      // independently of existence of command interface set initial value if defined
-      if (!std::isnan(initial_position)) {
-        this->dataPtr->joints_[j].joint_position = initial_position;
-        this->dataPtr->ecm->CreateComponent(
-          this->dataPtr->joints_[j].sim_joint,
-          sim::components::JointPositionReset({initial_position}));
-      }
-      if (!std::isnan(initial_velocity)) {
-        this->dataPtr->joints_[j].joint_velocity = initial_velocity;
-        this->dataPtr->ecm->CreateComponent(
-          this->dataPtr->joints_[j].sim_joint,
-          sim::components::JointVelocityReset({initial_velocity}));
-      }
+    }
+    // independently of existence of command interface set initial value if defined
+    if (std::isfinite(initial_position)) {
+      this->dataPtr->ecm->CreateComponent(
+        this->dataPtr->joints_[j].sim_joint,
+        sim::components::JointPositionReset({initial_position}));
+    }
+    if (std::isfinite(initial_velocity)) {
+      this->dataPtr->ecm->CreateComponent(
+        this->dataPtr->joints_[j].sim_joint,
+        sim::components::JointVelocityReset({initial_velocity}));
     }
 
     // check if joint is actuated (has command interfaces) or passive
@@ -571,10 +572,11 @@ void GazeboSimSystem::registerSensors(
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t " << state_interface.name);
 
         size_t data_index = interface_name_map.at(state_interface.name);
-        this->dataPtr->state_interfaces_.emplace_back(
+        auto si = std::make_shared<hardware_interface::StateInterface>(
           imuData->name,
-          state_interface.name,
-          &imuData->imu_sensor_data_[data_index]);
+          state_interface.name);
+        imuData->state_interfaces_[data_index] = si;
+        this->dataPtr->state_interfaces_.push_back(si);
       }
       this->dataPtr->imus_.push_back(imuData);
       return true;
@@ -622,10 +624,11 @@ void GazeboSimSystem::registerSensors(
         RCLCPP_INFO_STREAM(this->nh_->get_logger(), "\t\t " << state_interface.name);
 
         size_t data_index = interface_name_map.at(state_interface.name);
-        this->dataPtr->state_interfaces_.emplace_back(
+        auto si = std::make_shared<hardware_interface::StateInterface>(
           ftData->name,
-          state_interface.name,
-          &ftData->ft_sensor_data_[data_index]);
+          state_interface.name);
+        ftData->state_interfaces_[data_index] = si;
+        this->dataPtr->state_interfaces_.push_back(si);
       }
       this->dataPtr->ft_sensors_.push_back(ftData);
       return true;
@@ -633,28 +636,13 @@ void GazeboSimSystem::registerSensors(
 }
 
 CallbackReturn
-GazeboSimSystem::on_init(const hardware_interface::HardwareInfo & system_info)
+GazeboSimSystem::on_init(const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-  if (hardware_interface::SystemInterface::on_init(system_info) != CallbackReturn::SUCCESS) {
+  if (hardware_interface::SystemInterface::on_init(params) !=
+    CallbackReturn::SUCCESS)
+  {
     return CallbackReturn::ERROR;
   }
-  if (system_info.hardware_class_type.compare("gz_ros2_control/GazeboSimSystem") != 0) {
-    RCLCPP_WARN(
-      this->nh_->get_logger(),
-      "The ign_ros2_control plugin got renamed to gz_ros2_control.\n"
-      "Update the <ros2_control> tag and gazebo plugin to\n"
-      "<hardware>\n"
-      "  <plugin>gz_ros2_control/GazeboSimSystem</plugin>\n"
-      "</hardware>\n"
-      "<gazebo>\n"
-      "  <plugin filename=\"gz_ros2_control-system\""
-      "name=\"gz_ros2_control::GazeboSimROS2ControlPlugin\">\n"
-      "    ...\n"
-      "  </plugin>\n"
-      "</gazebo>"
-    );
-  }
-
   return CallbackReturn::SUCCESS;
 }
 
@@ -667,16 +655,21 @@ CallbackReturn GazeboSimSystem::on_configure(
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface>
-GazeboSimSystem::export_state_interfaces()
+std::vector<hardware_interface::StateInterface::ConstSharedPtr>
+GazeboSimSystem::on_export_state_interfaces()
 {
-  return std::move(this->dataPtr->state_interfaces_);
+  std::vector<hardware_interface::StateInterface::ConstSharedPtr> const_state_interfaces;
+  const_state_interfaces.reserve(this->dataPtr->state_interfaces_.size());
+  for (const auto & state_interface : this->dataPtr->state_interfaces_) {
+    const_state_interfaces.push_back(state_interface);
+  }
+  return const_state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface>
-GazeboSimSystem::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface::SharedPtr>
+GazeboSimSystem::on_export_command_interfaces()
 {
-  return std::move(this->dataPtr->command_interfaces_);
+  return this->dataPtr->command_interfaces_;
 }
 
 CallbackReturn GazeboSimSystem::on_activate(const rclcpp_lifecycle::State & previous_state)
@@ -717,9 +710,15 @@ hardware_interface::return_type GazeboSimSystem::read(
       continue;
     }
 
-    this->dataPtr->joints_[i].joint_position = jointPositions->Data()[0];
-    this->dataPtr->joints_[i].joint_velocity = jointVelocity->Data()[0];
-    GZ_PHYSICS_NAMESPACE Vector3d force_or_torque;
+    this->dataPtr->joints_[i].position.state_value = jointPositions->Data()[0];
+    this->dataPtr->joints_[i].velocity.state_value = jointVelocity->Data()[0];
+    if (this->dataPtr->joints_[i].position.state) {
+      (void)this->dataPtr->joints_[i].position.state->set_value(jointPositions->Data()[0], true);
+    }
+    if (this->dataPtr->joints_[i].velocity.state) {
+      (void)this->dataPtr->joints_[i].velocity.state->set_value(jointVelocity->Data()[0], true);
+    }
+    gz::physics::Vector3d force_or_torque;
     if (this->dataPtr->joints_[i].joint_type == sdf::JointType::PRISMATIC) {
       force_or_torque = {jointWrench->Data().force().x(),
         jointWrench->Data().force().y(), jointWrench->Data().force().z()};
@@ -728,10 +727,14 @@ hardware_interface::return_type GazeboSimSystem::read(
         jointWrench->Data().torque().y(), jointWrench->Data().torque().z()};
     }
     // Calculate the scalar effort along the joint axis
-    this->dataPtr->joints_[i].joint_effort = force_or_torque.GZ_VECTOR_DOT(
-      GZ_PHYSICS_NAMESPACE Vector3d{this->dataPtr->joints_[i].joint_axis.Xyz()[0],
+    double effort = force_or_torque.dot(
+      gz::physics::Vector3d{this->dataPtr->joints_[i].joint_axis.Xyz()[0],
         this->dataPtr->joints_[i].joint_axis.Xyz()[1],
         this->dataPtr->joints_[i].joint_axis.Xyz()[2]});
+    this->dataPtr->joints_[i].effort.state_value = effort;
+    if (this->dataPtr->joints_[i].effort.state) {
+      (void)this->dataPtr->joints_[i].effort.state->set_value(effort, true);
+    }
   }
 
   for (unsigned int i = 0; i < this->dataPtr->imus_.size(); ++i) {
@@ -816,38 +819,33 @@ hardware_interface::return_type GazeboSimSystem::write(
     }
 
     if (this->dataPtr->joints_[i].joint_control_method & VELOCITY) {
-      if (!this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-          this->dataPtr->joints_[i].sim_joint))
-      {
-        this->dataPtr->ecm->CreateComponent(
+      double velocity_cmd = 0.0;
+      if (this->dataPtr->joints_[i].velocity.command->get_value(velocity_cmd, true)) {
+        this->dataPtr->ecm->SetComponentData<sim::components::JointVelocityCmd>(
           this->dataPtr->joints_[i].sim_joint,
-          sim::components::JointVelocityCmd({0}));
-      } else {
-        const auto jointVelCmd =
-          this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-          this->dataPtr->joints_[i].sim_joint);
-        *jointVelCmd = sim::components::JointVelocityCmd(
-          {this->dataPtr->joints_[i].joint_velocity_cmd});
+          {velocity_cmd});
       }
     } else if (this->dataPtr->joints_[i].joint_control_method & POSITION) {
       // Get error in position
-      double error;
-      error = (this->dataPtr->joints_[i].joint_position -
-        this->dataPtr->joints_[i].joint_position_cmd) * *this->dataPtr->update_rate;
+      double position_cmd = 0.0;
+      if (this->dataPtr->joints_[i].position.command->get_value(position_cmd, true)) {
+        double error = (this->dataPtr->joints_[i].position.state_value - position_cmd) *
+          this->dataPtr->update_rate;
 
-      // Calculate target velcity
-      double target_vel = -this->dataPtr->position_proportional_gain_ * error;
+        // Calculate target velcity
+        double target_vel = -this->dataPtr->position_proportional_gain_ * error;
 
-      auto vel =
-        this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-        this->dataPtr->joints_[i].sim_joint);
+        auto vel =
+          this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
+          this->dataPtr->joints_[i].sim_joint);
 
-      if (vel == nullptr) {
-        this->dataPtr->ecm->CreateComponent(
-          this->dataPtr->joints_[i].sim_joint,
-          sim::components::JointVelocityCmd({target_vel}));
-      } else if (!vel->Data().empty()) {
-        vel->Data()[0] = target_vel;
+        if (vel == nullptr) {
+          this->dataPtr->ecm->CreateComponent(
+            this->dataPtr->joints_[i].sim_joint,
+            sim::components::JointVelocityCmd({target_vel}));
+        } else if (!vel->Data().empty()) {
+          vel->Data()[0] = target_vel;
+        }
       }
     } else if (this->dataPtr->joints_[i].joint_control_method & EFFORT) {
       if (!this->dataPtr->ecm->Component<sim::components::JointForceCmd>(
@@ -857,13 +855,15 @@ hardware_interface::return_type GazeboSimSystem::write(
           this->dataPtr->joints_[i].sim_joint,
           sim::components::JointForceCmd({0}));
       } else {
-        const auto jointEffortCmd =
-          this->dataPtr->ecm->Component<sim::components::JointForceCmd>(
-          this->dataPtr->joints_[i].sim_joint);
-        *jointEffortCmd = sim::components::JointForceCmd(
-          {this->dataPtr->joints_[i].joint_effort_cmd});
+        double effort_cmd = 0.0;
+        if (this->dataPtr->joints_[i].effort.command->get_value(effort_cmd, true)) {
+          const auto jointEffortCmd =
+            this->dataPtr->ecm->Component<sim::components::JointForceCmd>(
+            this->dataPtr->joints_[i].sim_joint);
+          *jointEffortCmd = sim::components::JointForceCmd({effort_cmd});
+        }
       }
-    } else if (this->dataPtr->joints_[i].is_actuated) {
+    } else if (this->dataPtr->joints_[i].is_actuated && this->dataPtr->hold_joints_) {
       // Fallback case is a velocity command of zero (only for actuated joints)
       double target_vel = 0.0;
       auto vel =
@@ -881,76 +881,31 @@ hardware_interface::return_type GazeboSimSystem::write(
   }
 
   // set values of all mimic joints with respect to mimicked joint
-  for (const auto & mimic_joint : this->dataPtr->mimic_joints_) {
-    for (const auto & mimic_interface : mimic_joint.interfaces_to_mimic) {
-      if (mimic_interface == "position") {
-        // Get the joint position
-        double position_mimicked_joint =
-          this->dataPtr->ecm->Component<sim::components::JointPosition>(
-          this->dataPtr->joints_[mimic_joint.mimicked_joint_index].sim_joint)->Data()[0];
+  for (const auto & mimic_joint : this->info_.mimic_joints) {
+    // Get the joint position
+    double position_mimicked_joint =
+      this->dataPtr->ecm->Component<sim::components::JointPosition>(
+      this->dataPtr->joints_[mimic_joint.mimicked_joint_index].sim_joint)->Data()[0];
 
-        double position_mimic_joint =
-          this->dataPtr->ecm->Component<sim::components::JointPosition>(
-          this->dataPtr->joints_[mimic_joint.joint_index].sim_joint)->Data()[0];
+    double position_mimic_joint =
+      this->dataPtr->ecm->Component<sim::components::JointPosition>(
+      this->dataPtr->joints_[mimic_joint.joint_index].sim_joint)->Data()[0];
 
-        double position_error =
-          position_mimic_joint - position_mimicked_joint * mimic_joint.multiplier;
+    double position_error =
+      position_mimic_joint - position_mimicked_joint * mimic_joint.multiplier;
 
-        double velocity_sp = (-1.0) * position_error * (*this->dataPtr->update_rate);
+    double velocity_sp = (-1.0) * position_error * this->dataPtr->update_rate;
 
-        auto vel =
-          this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-          this->dataPtr->joints_[mimic_joint.joint_index].sim_joint);
+    auto vel =
+      this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
+      this->dataPtr->joints_[mimic_joint.joint_index].sim_joint);
 
-        if (vel == nullptr) {
-          this->dataPtr->ecm->CreateComponent(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint,
-            sim::components::JointVelocityCmd({velocity_sp}));
-        } else if (!vel->Data().empty()) {
-          vel->Data()[0] = velocity_sp;
-        }
-      }
-      if (mimic_interface == "velocity") {
-        // get the velocity of mimicked joint
-        double velocity_mimicked_joint =
-          this->dataPtr->ecm->Component<sim::components::JointVelocity>(
-          this->dataPtr->joints_[mimic_joint.mimicked_joint_index].sim_joint)->Data()[0];
-
-        if (!this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint))
-        {
-          this->dataPtr->ecm->CreateComponent(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint,
-            sim::components::JointVelocityCmd({0}));
-        } else {
-          const auto jointVelCmd =
-            this->dataPtr->ecm->Component<sim::components::JointVelocityCmd>(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint);
-          *jointVelCmd = sim::components::JointVelocityCmd(
-            {mimic_joint.multiplier * velocity_mimicked_joint});
-        }
-      }
-      if (mimic_interface == "effort") {
-        // TODO(ahcorde): Revisit this part ignitionrobotics/ign-physics#124
-        // Get the joint force
-        // const auto * jointForce =
-        //   _ecm.Component<sim::components::JointForce>(
-        //   this->dataPtr->sim_joints_[j]);
-        if (!this->dataPtr->ecm->Component<sim::components::JointForceCmd>(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint))
-        {
-          this->dataPtr->ecm->CreateComponent(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint,
-            sim::components::JointForceCmd({0}));
-        } else {
-          const auto jointEffortCmd =
-            this->dataPtr->ecm->Component<sim::components::JointForceCmd>(
-            this->dataPtr->joints_[mimic_joint.joint_index].sim_joint);
-          *jointEffortCmd = sim::components::JointForceCmd(
-            {mimic_joint.multiplier *
-              this->dataPtr->joints_[mimic_joint.mimicked_joint_index].joint_effort});
-        }
-      }
+    if (vel == nullptr) {
+      this->dataPtr->ecm->CreateComponent(
+        this->dataPtr->joints_[mimic_joint.joint_index].sim_joint,
+        sim::components::JointVelocityCmd({velocity_sp}));
+    } else if (!vel->Data().empty()) {
+      vel->Data()[0] = velocity_sp;
     }
   }
 
@@ -961,6 +916,3 @@ hardware_interface::return_type GazeboSimSystem::write(
 #include "pluginlib/class_list_macros.hpp"  // NOLINT
 PLUGINLIB_EXPORT_CLASS(
   gz_ros2_control::GazeboSimSystem, gz_ros2_control::GazeboSimSystemInterface)
-// for backward compatibility with Ignition Gazebo
-PLUGINLIB_EXPORT_CLASS(
-  ign_ros2_control::IgnitionSystem, gz_ros2_control::GazeboSimSystemInterface)

@@ -47,7 +47,7 @@ def generate_test_description():
         PythonLaunchDescriptionSource(
             os.path.join(
                 get_package_share_directory('gz_ros2_control_demos'),
-                'launch/pendulum_example_effort.launch.py',
+                'launch/pendulum_example_position.launch.py',
             )
         ),
         launch_arguments={'gz_args': '--headless-rendering -s'}.items(),
@@ -103,7 +103,7 @@ class TestFixture(unittest.TestCase):
         )
 
     # ---------------------------------------------------------
-    # Helper: check initial pendulum angle BEFORE any motion
+    # Helper: check initial pendulum position BEFORE any motion
     # ---------------------------------------------------------
     def _check_initial_cart_position(self):
         from sensor_msgs.msg import JointState
@@ -163,7 +163,7 @@ class TestFixture(unittest.TestCase):
         # 4) Launch the node that moves the joint
         proc_action = Node(
             package='gz_ros2_control_demos',
-            executable='example_effort',
+            executable='example_position',
             output='screen',
         )
 

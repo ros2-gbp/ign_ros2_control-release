@@ -45,8 +45,8 @@ def generate_test_description():
     launch_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                get_package_share_directory('ign_ros2_control_demos'),
-                'launch/cart_example_position.launch.py',
+                get_package_share_directory('gz_ros2_control_demos'),
+                'launch/gripper_mimic_joint_example_position.launch.py',
             )
         ),
         launch_arguments={'gz_args': '--headless-rendering -s'}.items(),
@@ -65,9 +65,11 @@ class TestFixture(unittest.TestCase):
     def tearDownClass(cls):
         for proc in psutil.process_iter():
             # check whether the process name matches
-            if proc.name() == 'ruby':
+            if proc.name() == 'ruby' or 'gz sim' in proc.name():
+                # up to version 9 of gz-sim
                 proc.kill()
-            if 'gz sim' in proc.name():
+            if 'gz-sim' in proc.name():
+                # from version 10 of gz-sim
                 proc.kill()
         rclpy.shutdown()
 
@@ -88,20 +90,68 @@ class TestFixture(unittest.TestCase):
     def test_check_if_msgs_published(self):
         check_if_js_published(
             '/joint_states',
-            [
-                'slider_to_cart',
-            ],
+            ['right_finger_joint', 'left_finger_joint'],
         )
 
+    # ---------------------------------------------------------
+    # Helper: check initial gripper position BEFORE any motion
+    # ---------------------------------------------------------
+    def _check_initial_gripper_position(self):
+        from sensor_msgs.msg import JointState
+        msg = None
+
+        def callback(m):
+            nonlocal msg
+            msg = m
+
+        sub = self.node.create_subscription(
+            JointState,
+            '/joint_states',
+            callback,
+            10
+        )
+
+        end_time = self.node.get_clock().now().nanoseconds + int(10e9)
+        while msg is None and self.node.get_clock().now().nanoseconds < end_time:
+            rclpy.spin_once(self.node, timeout_sec=0.1)
+
+        self.node.destroy_subscription(sub)
+
+        self.assertIsNotNone(msg, 'No joint_state message received')
+        self.assertIn('right_finger_joint', msg.name)
+
+        joint_idx = msg.name.index('right_finger_joint')
+        expected_initial_value = 0.15
+        actual_value = msg.position[joint_idx]
+
+        self.assertAlmostEqual(
+            actual_value,
+            expected_initial_value,
+            places=2,
+            msg=f'Initial position mismatch: expected {expected_initial_value}, got {actual_value}'
+        )
+
+        print(f'Initial value verified: {actual_value} ≈ {expected_initial_value}')
+
+    # ---------------------------------------------------------
+    # Main test
+    # ---------------------------------------------------------
     def test_arm(self, launch_service, proc_info, proc_output):
 
-        # Check if the controllers are running
-        cnames = ['joint_trajectory_controller', 'joint_state_broadcaster']
+        # 1) Check initial position BEFORE any motion
+        self._check_initial_gripper_position()
+
+        # 2) Check controllers
+        cnames = [
+            'gripper_controller',
+            'joint_state_broadcaster',
+        ]
         check_controllers_running(self.node, cnames)
 
+        # 3) Launch the node that moves the joint
         proc_action = Node(
-            package='ign_ros2_control_demos',
-            executable='example_position',
+            package='gz_ros2_control_demos',
+            executable='example_gripper',
             output='screen',
         )
 
@@ -109,5 +159,8 @@ class TestFixture(unittest.TestCase):
             launch_service, proc_action, proc_info, proc_output
         ):
             proc_info.assertWaitForShutdown(process=proc_action, timeout=300)
-            launch_testing.asserts.assertExitCodes(proc_info, process=proc_action,
-                                                   allowable_exit_codes=[0])
+            launch_testing.asserts.assertExitCodes(
+                proc_info,
+                process=proc_action,
+                allowable_exit_codes=[0]
+            )
