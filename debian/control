@@ -1,0 +1,12 @@
+Source: ros-lyrical-gz-ros2-control-demos
+Section: misc
+Priority: optional
+Maintainer: Alejandro Hernandez <ahcorde@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), ros-lyrical-ament-cmake, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-control-msgs, ros-lyrical-control-toolbox, ros-lyrical-geometry-msgs, ros-lyrical-gz-ros2-control, ros-lyrical-gz-sim-vendor, ros-lyrical-hardware-interface, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-action, ros-lyrical-rclcpp-lifecycle, ros-lyrical-ros2-control-cmake, ros-lyrical-std-msgs, ros-lyrical-ros-workspace
+Homepage: https://github.com/ros-controls/gz_ros2_control/blob/master/README.md
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-gz-ros2-control-demos
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lyrical-ackermann-steering-controller, ros-lyrical-ament-index-python, ros-lyrical-control-msgs, ros-lyrical-control-toolbox, ros-lyrical-diff-drive-controller, ros-lyrical-effort-controllers, ros-lyrical-force-torque-sensor-broadcaster, ros-lyrical-geometry-msgs, ros-lyrical-gz-ros2-control, ros-lyrical-gz-sim-vendor, ros-lyrical-hardware-interface, ros-lyrical-imu-sensor-broadcaster, ros-lyrical-joint-state-broadcaster, ros-lyrical-joint-trajectory-controller, ros-lyrical-launch, ros-lyrical-launch-ros, ros-lyrical-mecanum-drive-controller, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-robot-state-publisher, ros-lyrical-ros-gz-bridge, ros-lyrical-ros-gz-sim, ros-lyrical-ros2-control-cmake, ros-lyrical-ros2controlcli, ros-lyrical-ros2launch, ros-lyrical-std-msgs, ros-lyrical-tricycle-steering-controller, ros-lyrical-velocity-controllers, ros-lyrical-xacro, ros-lyrical-ros-workspace
+Description: gz_ros2_control_demos
