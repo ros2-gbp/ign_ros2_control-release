@@ -1,0 +1,12 @@
+Source: ros-lyrical-gz-ros2-control
+Section: misc
+Priority: optional
+Maintainer: Alejandro Hernández <alejandro@openrobotics.com>
+Build-Depends: debhelper (>= 9.0.0), ros-lyrical-ament-cmake, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-controller-manager, ros-lyrical-gz-plugin-vendor, ros-lyrical-gz-sim-vendor, ros-lyrical-hardware-interface, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-ros2-control-cmake, ros-lyrical-yaml-cpp-vendor, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/gz_ros2_control/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-gz-ros2-control
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lyrical-controller-manager, ros-lyrical-gz-plugin-vendor, ros-lyrical-gz-sim-vendor, ros-lyrical-hardware-interface, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-ros2-control-cmake, ros-lyrical-yaml-cpp-vendor, ros-lyrical-ros-workspace
+Description: Gazebo ros2_control package allows to control simulated robots using ros2_control framework.
