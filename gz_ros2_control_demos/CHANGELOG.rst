@@ -2,7 +2,7 @@
 Changelog for package ign_ros2_control_demos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.0 (2026-05-13)
+3.0.8 (2026-05-14)
 ------------------
 * Fix controller dependencies (`#837 <https://github.com/ros-controls/gz_ros2_control/issues/837>`_)
 * Contributors: Christoph Fröhlich
