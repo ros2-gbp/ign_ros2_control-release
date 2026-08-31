@@ -74,7 +74,8 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster'],
+        arguments=['joint_state_broadcaster',
+                   ],
     )
     joint_trajectory_controller_spawner = Node(
         package='controller_manager',
@@ -85,6 +86,7 @@ def generate_launch_description():
             robot_controllers,
             ],
     )
+
     force_torque_sensor_broadcaster = Node(
         package='controller_manager',
         executable='spawner',
@@ -110,7 +112,7 @@ def generate_launch_description():
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'),
                                        'launch',
                                        'gz_sim.launch.py'])]),
-            launch_arguments=[('gz_args', [gz_args, ' -r -v 4 ', gazebo_world])]),
+            launch_arguments=[('gz_args', [gz_args, ' -r -v 1 ', gazebo_world])]),
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=gz_spawn_entity,
