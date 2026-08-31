@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>gz_ros2_control_demos</name>
-  <version>1.2.19</version>
+  <version>1.2.20</version>
   <description>gz_ros2_control_demos</description>
 
   <maintainer email="ahcorde@osrfoundation.org">Alejandro Hernandez</maintainer>
@@ -52,10 +52,7 @@
   <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>mecanum_drive_controller</exec_depend>
   <exec_depend>ros2controlcli</exec_depend>
-  <exec_depend>tricycle_steering_controller</exec_depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <exec_depend>tricycle_controller</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
