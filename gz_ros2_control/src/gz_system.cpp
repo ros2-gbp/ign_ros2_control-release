@@ -51,6 +51,10 @@
 #include <hardware_interface/lexical_casts.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 struct InterfaceData
 {
   /// \brief State interface shared pointer
@@ -779,18 +783,21 @@ GazeboSimSystem::perform_command_mode_switch(
   const std::vector<std::string> & start_interfaces,
   const std::vector<std::string> & stop_interfaces)
 {
+  constexpr ControlMethod_ kAllControlMethodBits =
+    static_cast<ControlMethod_>(POSITION | VELOCITY | EFFORT);
+
   for (unsigned int j = 0; j < this->dataPtr->joints_.size(); j++) {
     for (const std::string & interface_name : stop_interfaces) {
       // Clear joint control method bits corresponding to stop interfaces
       if (interface_name == this->dataPtr->joints_[j].if_name_position) {
         this->dataPtr->joints_[j].joint_control_method &=
-          static_cast<ControlMethod_>(VELOCITY & EFFORT);
+          static_cast<ControlMethod_>(kAllControlMethodBits ^ POSITION);
       } else if (interface_name == this->dataPtr->joints_[j].if_name_velocity) {
         this->dataPtr->joints_[j].joint_control_method &=
-          static_cast<ControlMethod_>(POSITION & EFFORT);
+          static_cast<ControlMethod_>(kAllControlMethodBits ^ VELOCITY);
       } else if (interface_name == this->dataPtr->joints_[j].if_name_effort) {
         this->dataPtr->joints_[j].joint_control_method &=
-          static_cast<ControlMethod_>(POSITION & VELOCITY);
+          static_cast<ControlMethod_>(kAllControlMethodBits ^ EFFORT);
       }
     }
 
@@ -892,7 +899,8 @@ hardware_interface::return_type GazeboSimSystem::write(
       this->dataPtr->joints_[mimic_joint.joint_index].sim_joint)->Data()[0];
 
     double position_error =
-      position_mimic_joint - position_mimicked_joint * mimic_joint.multiplier;
+      position_mimic_joint -
+      (position_mimicked_joint * mimic_joint.multiplier + mimic_joint.offset);
 
     double velocity_sp = (-1.0) * position_error * this->dataPtr->update_rate;
 
