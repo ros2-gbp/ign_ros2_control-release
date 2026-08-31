@@ -117,14 +117,11 @@ ament_target_dependencies(gz_custom_hardware_plugins
   rclcpp
   rclcpp_lifecycle
 )
+if(MSVC)
+  target_compile_definitions(gz_custom_hardware_plugins PRIVATE _USE_MATH_DEFINES)
+endif()
 
 #########
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-
-  ament_lint_auto_find_test_dependencies()
-endif()
 
 ## Install
 install(
