@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10)
 project(gz_ros2_control_demos)
 
 find_package(ros2_control_cmake REQUIRED)
@@ -86,14 +86,11 @@ PUBLIC
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
 )
+if(MSVC)
+  target_compile_definitions(gz_custom_hardware_plugins PRIVATE _USE_MATH_DEFINES)
+endif()
 
 #########
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-
-  ament_lint_auto_find_test_dependencies()
-endif()
 
 ## Install
 install(
