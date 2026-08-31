@@ -2,18 +2,17 @@
 Changelog for package ign_ros2_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.1 (2026-08-31)
+3.0.9 (2026-08-31)
 ------------------
-* Apply the mimic joint offset in GazeboSimSystem::write (`#953 <https://github.com/ros-controls/gz_ros2_control/issues/953>`_)
-* Remove linters from test stage (`#668 <https://github.com/ros-controls/gz_ros2_control/issues/668>`_)
-* Fix command mode stop masks (`#899 <https://github.com/ros-controls/gz_ros2_control/issues/899>`_)
-* Fix portable entity ID logging (`#900 <https://github.com/ros-controls/gz_ros2_control/issues/900>`_)
-* Avoid Windows ERROR macro conflict in gz_system (`#883 <https://github.com/ros-controls/gz_ros2_control/issues/883>`_)
-* Use portable Gazebo entity ID formatting (`#882 <https://github.com/ros-controls/gz_ros2_control/issues/882>`_)
-* Fix plugin loading in gazebo (`#876 <https://github.com/ros-controls/gz_ros2_control/issues/876>`_)
-* Contributors: Christoph Fröhlich, Dennis Lanov, Puja Chaudhury, Tim Clephas, Tobias Fischer
+* Apply the mimic joint offset in GazeboSimSystem::write (`#953 <https://github.com/ros-controls/gz_ros2_control/issues/953>`_) (`#956 <https://github.com/ros-controls/gz_ros2_control/issues/956>`_)
+* Fix command mode stop masks (`#899 <https://github.com/ros-controls/gz_ros2_control/issues/899>`_) (`#919 <https://github.com/ros-controls/gz_ros2_control/issues/919>`_)
+* Fix portable entity ID logging (`#900 <https://github.com/ros-controls/gz_ros2_control/issues/900>`_) (`#915 <https://github.com/ros-controls/gz_ros2_control/issues/915>`_)
+* Use portable Gazebo entity ID formatting (`#882 <https://github.com/ros-controls/gz_ros2_control/issues/882>`_) (`#905 <https://github.com/ros-controls/gz_ros2_control/issues/905>`_)
+* Avoid Windows ERROR macro conflict in gz_system (`#883 <https://github.com/ros-controls/gz_ros2_control/issues/883>`_) (`#895 <https://github.com/ros-controls/gz_ros2_control/issues/895>`_)
+* Fix plugin loading in gazebo (`#876 <https://github.com/ros-controls/gz_ros2_control/issues/876>`_) (`#878 <https://github.com/ros-controls/gz_ros2_control/issues/878>`_)
+* Contributors: mergify[bot]
 
-4.0.0 (2026-05-13)
+3.0.8 (2026-05-14)
 ------------------
 
 3.0.7 (2026-04-15)
