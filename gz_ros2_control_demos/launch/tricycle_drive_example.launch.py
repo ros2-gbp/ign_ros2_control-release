@@ -78,9 +78,7 @@ def generate_launch_description():
             'tricycle_controller',
             '--param-file',
             robot_controllers,
-            '--controller-ros-args',
-            '-r /tricycle_controller/cmd_vel:=/cmd_vel'
-        ],
+            ],
     )
 
     # Bridge
