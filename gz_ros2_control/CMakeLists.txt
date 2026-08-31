@@ -104,12 +104,6 @@ ament_target_dependencies(ign_ros2_control-system
   rclcpp_lifecycle
 )
 
-# Testing and linting
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 # Export old-style CMake variables
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME}-system gz_hardware_plugins)
@@ -129,6 +123,8 @@ install(TARGETS ign_ros2_control-system
 )
 
 pluginlib_export_plugin_description_file(gz_ros2_control gz_hardware_plugins.xml)
+
+ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/${PROJECT_NAME}.dsv.in")
 
 # Setup the project
 ament_package()
