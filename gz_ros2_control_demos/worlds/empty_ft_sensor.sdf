@@ -2,9 +2,9 @@
 <!--
   Try inserting a model:
 
-gz service -s /world/empty/create \
---reqtype gz.msgs.EntityFactory \
---reptype gz.msgs.Boolean \
+ign service -s /world/empty/create \
+--reqtype ignition.msgs.EntityFactory \
+--reptype ignition.msgs.Boolean \
 --timeout 300 \
 --req 'sdf: '\
 '"<?xml version=\"1.0\" ?>'\
@@ -26,15 +26,15 @@ gz service -s /world/empty/create \
 
   Then try deleting it:
 
-gz service -s /world/empty/remove \
---reqtype gz.msgs.Entity \
---reptype gz.msgs.Boolean \
+ign service -s /world/empty/remove \
+--reqtype ignition.msgs.Entity \
+--reptype ignition.msgs.Boolean \
 --timeout 300 \
 --req 'name: "new_name" type: MODEL'
 
   Try inserting a light:
 
-gz service -s /world/empty/create --reqtype gz.msgs.EntityFactory --reptype gz.msgs.Boolean --timeout 300 --req 'sdf: '\
+ign service -s /world/empty/create --reqtype ignition.msgs.EntityFactory --reptype ignition.msgs.Boolean --timeout 300 --req 'sdf: '\
 '"<?xml version=\"1.0\" ?>'\
 '<sdf version=\"1.6\">'\
 '<light name=\"spawned_light\" type=\"directional\">'\
@@ -44,17 +44,17 @@ gz service -s /world/empty/create --reqtype gz.msgs.EntityFactory --reptype gz.m
 
   Then try deleting it:
 
-gz service -s /world/empty/remove \
---reqtype gz.msgs.Entity \
---reptype gz.msgs.Boolean \
+ign service -s /world/empty/remove \
+--reqtype ignition.msgs.Entity \
+--reptype ignition.msgs.Boolean \
 --timeout 300 \
 --req 'name: "spawned_light" type: LIGHT'
 
   Insert a light using a message and allow_renaming:
 
-gz service -s /world/empty/create \
---reqtype gz.msgs.EntityFactory \
---reptype gz.msgs.Boolean \
+ign service -s /world/empty/create \
+--reqtype ignition.msgs.EntityFactory \
+--reptype ignition.msgs.Boolean \
 --timeout 300 \
 --req 'allow_renaming: true, light: {name: "spawned_light", type: 2, diffuse: {r: 1}}'
 
@@ -66,24 +66,24 @@ gz service -s /world/empty/create \
       <real_time_factor>1.0</real_time_factor>
     </physics>
     <plugin
-      filename="gz-sim-physics-system"
+      filename="ignition-gazebo-physics-system"
       name="gz::sim::systems::Physics">
     </plugin>
     <plugin
-      filename="gz-sim-user-commands-system"
+      filename="ignition-gazebo-user-commands-system"
       name="gz::sim::systems::UserCommands">
     </plugin>
     <plugin
-      filename="gz-sim-scene-broadcaster-system"
+      filename="ignition-gazebo-scene-broadcaster-system"
       name="gz::sim::systems::SceneBroadcaster">
     </plugin>
     <plugin
-      filename="gz-sim-contact-system"
+      filename="ignition-gazebo-contact-system"
       name="gz::sim::systems::Contact">
     </plugin>
     <plugin
-      filename="gz-sim-forcetorque-system"
-      name="gz::sim::systems::ForceTorque">
+      filename="ignition-gazebo-forcetorque-system"
+      name="ignition::gazebo::systems::ForceTorque">
     </plugin>
 
     <light type="directional" name="sun">
