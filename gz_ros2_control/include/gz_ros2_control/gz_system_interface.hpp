@@ -21,18 +21,13 @@
 #include <string>
 #include <vector>
 
-#ifdef GZ_HEADERS
 #include <gz/sim/System.hh>
 namespace sim = gz::sim;
-#else
-#include <ignition/gazebo/System.hh>
-namespace sim = ignition::gazebo;
-#endif
 
 #include <hardware_interface/system_interface.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 
-#include <rclcpp/rclcpp.hpp>
+#include <rclcpp/node.hpp>
 
 namespace gz_ros2_control
 {
@@ -66,11 +61,20 @@ public:
   : mFlags(original.mFlags) {}
 
   SafeEnum & operator|=(ENUM addValue) {mFlags |= addValue; return *this;}
-  SafeEnum operator|(ENUM addValue) {SafeEnum result(*this); result |= addValue; return result;}
+  SafeEnum operator|(ENUM addValue) const
+  {
+    SafeEnum result(*this); result |= addValue; return result;
+  }
   SafeEnum & operator&=(ENUM maskValue) {mFlags &= maskValue; return *this;}
-  SafeEnum operator&(ENUM maskValue) {SafeEnum result(*this); result &= maskValue; return result;}
-  SafeEnum operator~() {SafeEnum result(*this); result.mFlags = ~result.mFlags; return result;}
-  explicit operator bool() {return mFlags != 0;}
+  SafeEnum operator&(ENUM maskValue) const
+  {
+    SafeEnum result(*this); result &= maskValue; return result;
+  }
+  SafeEnum operator~() const
+  {
+    SafeEnum result(*this); result.mFlags = ~result.mFlags; return result;
+  }
+  explicit operator bool() const {return mFlags != 0;}
 
 protected:
   UNDERLYING mFlags;
@@ -93,7 +97,7 @@ public:
     std::map<std::string, sim::Entity> & joints,
     const hardware_interface::HardwareInfo & hardware_info,
     sim::EntityComponentManager & _ecm,
-    int & update_rate) = 0;
+    unsigned int update_rate) = 0;
 
   // Methods used to control a joint.
   enum ControlMethod_

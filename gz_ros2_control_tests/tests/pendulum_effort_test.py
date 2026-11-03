@@ -23,6 +23,7 @@ from controller_manager.test_utils import (
     check_node_running
 )
 from controller_manager_msgs.srv import ListControllers
+from gz_ros2_control_tests.gazebo import stop_gazebo
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -31,7 +32,6 @@ import launch_testing
 from launch_testing.actions import ReadyToTest
 from launch_testing.util import KeepAliveProc
 from launch_testing_ros import WaitForTopics
-import psutil
 import pytest
 import rclpy
 from rosgraph_msgs.msg import Clock
@@ -64,14 +64,7 @@ class TestFixture(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        for proc in psutil.process_iter():
-            # check whether the process name matches
-            if proc.name() == 'ruby' or 'gz sim' in proc.name():
-                # up to version 9 of gz-sim
-                proc.kill()
-            if 'gz-sim' in proc.name():
-                # from version 10 of gz-sim
-                proc.kill()
+        stop_gazebo()
         rclpy.shutdown()
 
     def setUp(self):
@@ -103,16 +96,10 @@ class TestFixture(unittest.TestCase):
         )
 
     # ---------------------------------------------------------
-    # Helper: ensure joint_states is publishing and pendulum joint exists
-    #
-    # Note: # In ROS 2 Humble, the initial_value of the pendulum joint is applied
-    # to the Gazebo simulation, but is not immediately  reflected in the
-    # ros2-control state interface. As a result the initial position cannot be
-    # validated reliably through /joint_states at startup.
+    # Helper: check initial pendulum angle BEFORE any motion
     # ---------------------------------------------------------
-    def _check_joint_state_topic_and_pendulum_joint(self):
+    def _check_initial_cart_position(self):
         from sensor_msgs.msg import JointState
-
         msg = None
 
         def callback(m):
@@ -135,13 +122,26 @@ class TestFixture(unittest.TestCase):
         self.assertIsNotNone(msg, 'No joint_state message received')
         self.assertIn('cart_to_pendulum', msg.name)
 
+        joint_idx = msg.name.index('cart_to_pendulum')
+        expected_initial_value = 1.57
+        actual_value = msg.position[joint_idx]
+
+        self.assertAlmostEqual(
+            actual_value,
+            expected_initial_value,
+            places=2,
+            msg=f'Initial position mismatch: expected {expected_initial_value}, got {actual_value}'
+        )
+
+        print(f'Initial value verified: {actual_value} ≈ {expected_initial_value}')
+
     # ---------------------------------------------------------
     # Main test
     # ---------------------------------------------------------
     def test_arm(self, launch_service, proc_info, proc_output):
 
-        # 1) Ensure joint_states is publishing and pendulum joint exists
-        self._check_joint_state_topic_and_pendulum_joint()
+        # 1) Check initial position BEFORE any motion
+        self._check_initial_cart_position()
 
         # 2) Wait for controller_manager to be ready
         self._wait_for_controller_manager()
